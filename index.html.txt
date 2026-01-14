@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Advency Calculator</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#0f1b33;
+      --muted:#9fb1d6;
+      --text:#e9f0ff;
+      --accent:#00b4d8;
+      --accent2:#0a1f44;
+      --line:rgba(255,255,255,.10);
+      --good:#3ddc97;
+      --bad:#ff6b6b;
+      --shadow: 0 18px 55px rgba(0,0,0,.45);
+      --radius: 18px;
+      --radius2: 14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background:
+        radial-gradient(1200px 900px at 15% 10%, rgba(0,180,216,.18), transparent 55%),
+        radial-gradient(1200px 900px at 85% 15%, rgba(61,220,151,.10), transparent 55%),
+        radial-gradient(1200px 900px at 60% 85%, rgba(255,255,255,.06), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+    }
+    .advency-card{
+      width:min(980px, 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .advency-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      padding:22px 22px 16px;
+      background:
+        linear-gradient(90deg, rgba(0,180,216,.14), transparent 65%),
+        linear-gradient(180deg, rgba(10,31,68,.45), transparent 80%);
+      border-bottom:1px solid var(--line);
+    }
+    .advency-title{
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:.2px;
+      margin-bottom:6px;
+    }
+    .advency-sub{
+      font-size:13px;
+      color:var(--muted);
+    }
+    .advency-badge{
+      background: rgba(0,180,216,.16);
+      color: #c9f7ff;
+      border:1px solid rgba(0,180,216,.35);
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:800;
+      letter-spacing:.8px;
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .advency-body{ padding:18px 22px 22px; }
+    .advency-grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:14px;
+    }
+    @media (max-width: 820px){
+      .advency-grid{ grid-template-columns: 1fr; }
+    }
+    .advency-field{
+      background: rgba(15,27,51,.55);
+      border:1px solid var(--line);
+      border-radius: var(--radius2);
+      padding:14px 14px 12px;
+    }
+    label{
+      display:block;
+      font-weight:800;
+      margin-bottom:8px;
+      font-size:13px;
+    }
+    small{
+      display:block;
+      margin-top:8px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.25;
+    }
+    input{
+      width:100%;
+      padding:12px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(5,10,22,.55);
+      color: var(--text);
+      outline:none;
+      font-size:14px;
+    }
+    input:focus{
+      border-color: rgba(0,180,216,.55);
+      box-shadow: 0 0 0 4px rgba(0,180,216,.16);
+    }
+    .advency-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    button{
+      cursor:pointer;
+      border:none;
+      border-radius: 12px;
+      padding:11px 14px;
+      font-weight:900;
+      letter-spacing:.2px;
+      font-size:14px;
+    }
+    .btn-primary{
+      background: linear-gradient(90deg, rgba(0,180,216,.95), rgba(61,220,151,.85));
+      color:#04101c;
+    }
+    .btn-ghost{
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+    .advency-results{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:12px;
+    }
+    @media (max-width: 820px){
+      .advency-results{ grid-template-columns: 1fr; }
+    }
+    .result{
+      border:1px solid var(--line);
+      border-radius: var(--radius2);
+      padding:14px;
+      background: rgba(15,27,51,.35);
+    }
+    .result h4{
+      margin:0 0 10px;
+      font-size:12px;
+      color: var(--muted);
+      font-weight:900;
+      letter-spacing:.35px;
+      text-transform:uppercase;
+    }
+    .value{
+      font-size:20px;
+      font-weight:950;
+    }
+    .value.good{ color: var(--good); }
+    .value.bad{ color: var(--bad); }
+    .mono{
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      margin-top:8px;
+      white-space: pre-wrap;
+      line-height: 1.35;
+    }
+    .foot{
+      margin-top:14px;
+      color: var(--muted);
+      font-size: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="advency-card">
+    <div class="advency-head">
+      <div>
+        <div class="advency-title">Calculadora de Comisiones</div>
+        <div class="advency-sub">Costo del sistema → Comisión → Fee CRM (10%)</div>
+      </div>
+      <div class="advency-badge">ADVENCY</div>
+    </div>
+
+    <div class="advency-body">
+      <div class="advency-grid">
+        <div class="advency-field">
+          <label>Paneles</label>
+          <input id="panels" type="number" min="0" step="1" value="20" />
+          <small>Cantidad de paneles instalados.</small>
+        </div>
+
+        <div class="advency-field">
+          <label>Precio por panel ($)</label>
+          <input id="pricePerPanel" type="number" min="0" step="0.01" value="410" />
+          <small>Tu multiplicador base por panel.</small>
+        </div>
+
+        <div class="advency-field">
+          <label>Multiplicador del sistema</label>
+          <input id="systemMultiplier" type="number" min="0" step="0.001" value="5.100" />
+          <small>Ej: 5.100 (según tu fórmula).</small>
+        </div>
+
+        <div class="advency-field">
+          <label>% Comisión</label>
+          <input id="commissionPct" type="number" min="0" step="0.01" value="10" />
+          <small>Ej: 10, 12, 13…</small>
+        </div>
+
+        <div class="advency-field">
+          <label>% Fee CRM</label>
+          <input id="crmFeePct" type="number" min="0" step="0.01" value="10" />
+          <small>Por defecto 10% de la comisión.</small>
+        </div>
+
+        <div class="advency-field">
+          <label>Número de ventas</label>
+          <input id="salesCount" type="number" min="1" step="1" value="1" />
+          <small>Para totales del mes.</small>
+        </div>
+      </div>
+
+      <div class="advency-actions">
+        <button class="btn-primary" onclick="calc()">Calcular</button>
+        <button class="btn-ghost" onclick="resetDefaults()">Reset</button>
+      </div>
+
+      <div class="advency-results">
+        <div class="result">
+          <h4>Costo del sistema</h4>
+          <div class="value" id="systemCost">$0</div>
+          <div class="mono" id="systemCostFormula"></div>
+        </div>
+
+        <div class="result">
+          <h4>Comisión (bruta)</h4>
+          <div class="value good" id="grossCommission">$0</div>
+          <div class="mono" id="grossFormula"></div>
+        </div>
+
+        <div class="result">
+          <h4>Fee CRM (10%)</h4>
+          <div class="value bad" id="crmFee">$0</div>
+          <div class="mono" id="feeFormula"></div>
+        </div>
+
+        <div class="result">
+          <h4>Comisión neta</h4>
+          <div class="value" id="netCommission">$0</div>
+          <div class="mono" id="netFormula"></div>
+        </div>
+
+        <div class="result">
+          <h4>Total neto del mes</h4>
+          <div class="value" id="monthlyNet">$0</div>
+          <div class="mono" id="monthlyFormula"></div>
+        </div>
+
+        <div class="result">
+          <h4>Resumen</h4>
+          <div class="mono" id="summary"></div>
+        </div>
+      </div>
+
+      <div class="foot">
+        Nota: Esto es una herramienta simple para estimar. Ajusta % y multiplicadores según tu plan real.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function money(n){
+      return n.toLocaleString('en-US', { style:'currency', currency:'USD' });
+    }
+
+    function num(id){
+      const v = parseFloat(document.getElementById(id).value);
+      return isNaN(v) ? 0 : v;
+    }
+
+    function calc(){
+      const panels = num('panels');
+      const pricePerPanel = num('pricePerPanel');
+      const systemMultiplier = num('systemMultiplier');
+      const commissionPct = num('commissionPct') / 100;
+      const crmFeePct = num('crmFeePct') / 100;
+      const salesCount = Math.max(1, Math.round(num('salesCount')));
+
+      // Example cost formula (editable):
+      // cost = panels * pricePerPanel * systemMultiplier
+      const systemCost = panels * pricePerPanel * systemMultiplier;
+
+      const grossCommission = systemCost * commissionPct;
+      const crmFee = grossCommission * crmFeePct;
+      const netCommission = grossCommission - crmFee;
+      const monthlyNet = netCommission * salesCount;
+
+      document.getElementById('systemCost').textContent = money(systemCost);
+      document.getElementById('grossCommission').textContent = money(grossCommission);
+      document.getElementById('crmFee').textContent = money(crmFee);
+      document.getElementById('netCommission').textContent = money(netCommission);
+      document.getElementById('monthlyNet').textContent = money(monthlyNet);
+
+      document.getElementById('systemCostFormula').textContent =
+        `Costo = paneles(${panels}) × precio(${pricePerPanel}) × multiplicador(${systemMultiplier})`;
+
+      document.getElementById('grossFormula').textContent =
+        `Bruta = costo(${systemCost.toFixed(2)}) × comisión(${(commissionPct*100).toFixed(2)}%)`;
+
+      document.getElementById('feeFormula').textContent =
+        `Fee = bruta(${grossCommission.toFixed(2)}) × CRM(${(crmFeePct*100).toFixed(2)}%)`;
+
+      document.getElementById('netFormula').textContent =
+        `Neta = bruta(${grossCommission.toFixed(2)}) − fee(${crmFee.toFixed(2)})`;
+
+      document.getElementById('monthlyFormula').textContent =
+        `Mensual = neta(${netCommission.toFixed(2)}) × ventas(${salesCount})`;
+
+      document.getElementById('summary').textContent =
+        `Paneles: ${panels}\nPrecio/panel: ${money(pricePerPanel)}\nMultiplicador: ${systemMultiplier}\n% Comisión: ${(commissionPct*100).toFixed(2)}%\n% CRM: ${(crmFeePct*100).toFixed(2)}%\nVentas: ${salesCount}`;
+    }
+
+    function resetDefaults(){
+      document.getElementById('panels').value = 20;
+      document.getElementById('pricePerPanel').value = 410;
+      document.getElementById('systemMultiplier').value = 5.100;
+      document.getElementById('commissionPct').value = 10;
+      document.getElementById('crmFeePct').value = 10;
+      document.getElementById('salesCount').value = 1;
+      calc();
+    }
+
+    // Auto-calc at load
+    calc();
+  </script>
+</body>
+</html>

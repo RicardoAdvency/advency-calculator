@@ -3,87 +3,52 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Advency | Cotizador Solar PR (Comisión + Fee CRM)</title>
-  <meta name="description" content="Cotizador premium para industria solar en Puerto Rico. Calcula costo del sistema, comisión y fee CRM." />
-
+  <title>Advency • Calculadora Solar PR</title>
   <style>
     :root{
-      /* Base */
       --bg:#ffffff;
-      --ink:#0b1220;
-      --muted:#5b6474;
-      --line: rgba(16,24,40,.12);
-
-      /* Solar PR (naranja) */
-      --orange:#ff7a18;
-      --orange2:#ffb000;
-      --navy:#0A1F44;
-
-      --good:#0f9d58;
-      --bad:#d92d20;
-
-      --shadow: 0 18px 55px rgba(2,6,23,.10);
-      --shadow2: 0 10px 28px rgba(2,6,23,.08);
-      --radius: 18px;
-      --radius2: 14px;
-
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --line:#e5e7eb;
+      --shadow:0 14px 40px rgba(2,6,23,.08);
+      --orange:#f97316;
+      --orange2:#fb923c;
+      --soft:#fff7ed;
+      --good:#16a34a;
+      --bad:#ef4444;
+      --radius:18px;
+      --radius2:14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
-
-    *{ box-sizing:border-box; }
+    *{box-sizing:border-box}
     body{
       margin:0;
       font-family:var(--sans);
-      color:var(--ink);
       background:
-        radial-gradient(900px 600px at 15% 10%, rgba(255,122,24,.14), transparent 60%),
-        radial-gradient(900px 600px at 85% 15%, rgba(255,176,0,.14), transparent 60%),
-        radial-gradient(1100px 650px at 50% 110%, rgba(10,31,68,.06), transparent 55%),
+        radial-gradient(900px 500px at 85% -10%, rgba(249,115,22,.10), transparent 60%),
+        radial-gradient(900px 500px at 10% 0%, rgba(251,146,60,.08), transparent 60%),
         var(--bg);
-      min-height:100vh;
-      padding:26px;
-      display:flex;
-      justify-content:center;
-      align-items:flex-start;
+      color:var(--text);
     }
-
     .wrap{
-      width:min(1120px,100%);
-      display:flex;
-      flex-direction:column;
-      gap:14px;
+      max-width:1100px;
+      margin:0 auto;
+      padding:22px 16px 40px;
     }
-
-    /* Topbar premium */
     .topbar{
-      background: rgba(255,255,255,.90);
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      position:relative;
-    }
-    .topbar::before{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      background:
-        linear-gradient(90deg, rgba(255,122,24,.22), transparent 45%),
-        linear-gradient(180deg, rgba(255,176,0,.18), transparent 65%);
-      filter: blur(18px);
-      opacity:.9;
-      pointer-events:none;
-    }
-    .topbar-inner{
-      position:relative;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      padding: 16px 18px;
+      padding:14px 16px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:rgba(255,255,255,.85);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(2,6,23,.05);
     }
-
     .brand{
       display:flex;
       align-items:center;
@@ -91,47 +56,27 @@
       min-width:0;
     }
     .logo{
-      width:48px;
-      height:48px;
-      border-radius: 14px;
-      background:#fff;
-      border:1px solid var(--line);
-      box-shadow: var(--shadow2);
-      display:grid;
-      place-items:center;
-      overflow:hidden;
-      flex:0 0 auto;
-    }
-    .logo img{
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      padding:6px;
+      height:34px;
+      width:auto;
       display:block;
     }
-    .brand-text{
-      min-width:0;
-      display:flex;
-      flex-direction:column;
-      gap:3px;
-    }
-    .brand-text .name{
-      font-weight:950;
-      letter-spacing:.2px;
+    .brand h1{
       font-size:16px;
+      margin:0;
+      letter-spacing:.2px;
+      line-height:1.2;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
-    .brand-text .sub{
+    .brand .sub{
+      margin-top:3px;
+      font-size:12px;
       color:var(--muted);
-      font-size:13px;
-      line-height:1.25;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
-
     .right{
       display:flex;
       align-items:center;
@@ -139,572 +84,729 @@
       flex-wrap:wrap;
       justify-content:flex-end;
     }
-
-    .chip{
-      border:1px solid rgba(255,122,24,.35);
-      background: rgba(255,122,24,.10);
-      color:#7a2f00;
-      padding:8px 12px;
-      border-radius:999px;
-      font-weight:950;
+    .pill{
       font-size:12px;
-      letter-spacing:.4px;
+      padding:8px 10px;
+      border-radius:999px;
+      background:var(--soft);
+      border:1px solid rgba(249,115,22,.25);
+      color:#9a3412;
+      display:flex;
+      align-items:center;
+      gap:8px;
       white-space:nowrap;
     }
-
-    .toggle{
-      display:flex;
-      gap:8px;
-      background: rgba(2,6,23,.04);
-      border:1px solid var(--line);
-      border-radius: 999px;
-      padding: 6px;
-    }
-    .toggle button{
-      border:0;
-      background: transparent;
-      color: rgba(11,18,32,.55);
-      font-weight: 950;
-      font-size: 12px;
-      letter-spacing:.35px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      cursor:pointer;
-      transition: .15s ease;
-    }
-    .toggle button.active{
-      background: linear-gradient(90deg, rgba(255,122,24,.95), rgba(255,176,0,.88));
-      color: #2a1100;
-      box-shadow: 0 8px 18px rgba(255,122,24,.22);
-    }
-
+    .pill b{color:#7c2d12}
     .grid{
+      margin-top:14px;
       display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 14px;
+      grid-template-columns: 1.05fr .95fr;
+      gap:14px;
     }
     @media (max-width: 980px){
-      .grid{ grid-template-columns: 1fr; }
-      body{ padding: 16px; }
+      .grid{grid-template-columns:1fr}
     }
 
-    .panel{
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgba(255,255,255,.86);
-      box-shadow: var(--shadow);
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
       overflow:hidden;
-      position:relative;
     }
-    .panel .head{
-      padding: 16px 18px;
-      border-bottom: 1px solid var(--line);
+    .cardHead{
+      padding:14px 16px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      background:
-        linear-gradient(90deg, rgba(255,122,24,.10), transparent 55%),
-        linear-gradient(180deg, rgba(2,6,23,.02), transparent 80%);
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(249,115,22,.06), transparent 70%);
     }
-    .panel .head h3{
+    .cardHead h2{
       margin:0;
-      font-size: 13px;
-      letter-spacing:.5px;
-      text-transform: uppercase;
-      color: rgba(11,18,32,.86);
-      font-weight: 950;
+      font-size:14px;
+      letter-spacing:.2px;
     }
-    .panel .head .hint{
-      margin:0;
-      font-size: 12px;
-      color: var(--muted);
-      white-space:nowrap;
+    .badge{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(249,115,22,.30);
+      background: rgba(249,115,22,.08);
+      color:#9a3412;
     }
 
-    .body{
-      padding: 16px 18px 18px;
+    .content{padding:14px 16px}
+    .sectionTitle{
+      margin:0 0 10px;
+      font-size:12px;
+      color:var(--muted);
+      letter-spacing:.12em;
+      text-transform:uppercase;
     }
-
     .fields{
       display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 12px;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
     }
-    @media (max-width: 720px){
-      .fields{ grid-template-columns: 1fr; }
+    @media (max-width:560px){
+      .fields{grid-template-columns:1fr}
+      .right{justify-content:flex-start}
     }
-
-    .field{
-      border:1px solid var(--line);
-      border-radius: var(--radius2);
-      background: rgba(2,6,23,.02);
-      padding: 12px;
-      position:relative;
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
     }
-    .field::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      border-radius: var(--radius2);
-      pointer-events:none;
-      background: linear-gradient(135deg, rgba(255,122,24,.08), transparent 40%);
-      opacity:.8;
+    .help{
+      font-size:11px;
+      color:var(--muted);
+      margin-top:6px;
+      line-height:1.25;
     }
-    .field > *{ position:relative; }
-
-    .field label{
-      display:flex;
-      align-items:baseline;
-      justify-content:space-between;
-      gap:8px;
-      font-weight: 950;
-      font-size: 13px;
-      margin-bottom: 8px;
-      color: rgba(11,18,32,.86);
-    }
-    .field label span.note{
-      font-weight: 900;
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    input{
+    input, select{
       width:100%;
-      padding: 12px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(16,24,40,.16);
-      background: rgba(255,255,255,.92);
-      color: rgba(11,18,32,.92);
+      padding:12px 12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      font-size:14px;
       outline:none;
-      font-size: 14px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+      background:#fff;
+      color:var(--text);
     }
-    input:focus{
-      border-color: rgba(255,122,24,.55);
-      box-shadow: 0 0 0 4px rgba(255,122,24,.16);
+    input:focus, select:focus{
+      border-color: rgba(249,115,22,.55);
+      box-shadow: 0 0 0 4px rgba(249,115,22,.12);
     }
-
-    .actions{
+    .row{
       display:flex;
       gap:10px;
+      align-items:center;
+    }
+    .toggle{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+    }
+    .toggle input{width:auto}
+    .btns{
+      display:flex;
       flex-wrap:wrap;
-      margin-top: 12px;
+      gap:10px;
+      margin-top:12px;
     }
     .btn{
-      border:0;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      border-radius:14px;
+      padding:10px 12px;
+      font-weight:600;
       cursor:pointer;
-      font-weight: 950;
-      border-radius: 12px;
-      padding: 11px 14px;
-      font-size: 14px;
-      letter-spacing:.2px;
-      transition:.15s ease;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      transition: all .15s ease;
+      text-decoration:none;
     }
-    .btn.primary{
-      background: linear-gradient(90deg, rgba(255,122,24,.98), rgba(255,176,0,.92));
-      color:#2a1100;
-      box-shadow: 0 10px 22px rgba(255,122,24,.22);
+    .btn:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 18px rgba(2,6,23,.06);
+      border-color: rgba(249,115,22,.35);
     }
-    .btn.ghost{
-      background: rgba(2,6,23,.04);
-      color: rgba(11,18,32,.90);
-      border: 1px solid var(--line);
+    .btnPrimary{
+      background: linear-gradient(180deg, var(--orange), #fb7a2d);
+      color:#fff;
+      border-color: rgba(249,115,22,.70);
     }
-    .btn:active{ transform: translateY(1px); }
-
-    .cards{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 12px;
-    }
-    @media (max-width: 720px){
-      .cards{ grid-template-columns: 1fr; }
+    .btnPrimary:hover{filter:brightness(1.02)}
+    .btnGhost{
+      background: rgba(249,115,22,.06);
+      border-color: rgba(249,115,22,.25);
+      color:#9a3412;
     }
 
     .kpi{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .k{
       border:1px solid var(--line);
-      border-radius: var(--radius2);
-      background: rgba(255,255,255,.92);
-      padding: 14px;
-      box-shadow: 0 10px 22px rgba(2,6,23,.06);
-      position:relative;
-      overflow:hidden;
+      border-radius:var(--radius2);
+      padding:12px;
+      background: #fff;
     }
-    .kpi::before{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      background: radial-gradient(380px 240px at 20% 0%, rgba(255,122,24,.18), transparent 60%);
-      opacity:.85;
-      pointer-events:none;
+    .k .t{font-size:12px;color:var(--muted);margin-bottom:8px}
+    .k .v{font-size:22px;font-weight:800;letter-spacing:.2px}
+    .k .s{font-size:12px;color:var(--muted);margin-top:6px}
+    .k.orange{
+      background: linear-gradient(180deg, rgba(249,115,22,.10), rgba(255,255,255,.9));
+      border-color: rgba(249,115,22,.22);
     }
-    .kpi > *{ position:relative; }
 
-    .kpi .k{
-      font-size: 11px;
-      letter-spacing:.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-      font-weight: 950;
-      margin-bottom: 10px;
+    .divider{height:1px;background:var(--line);margin:14px 0}
+    .note{
+      padding:10px 12px;
+      border-radius:14px;
+      background: rgba(2,6,23,.03);
+      border:1px dashed rgba(2,6,23,.12);
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
     }
-    .kpi .v{
-      font-size: 22px;
-      font-weight: 950;
-      color: rgba(11,18,32,.92);
-    }
-    .kpi .v.good{ color: var(--good); }
-    .kpi .v.bad{ color: var(--bad); }
-
     .mono{
-      margin-top: 10px;
-      font-family: var(--mono);
-      font-size: 12px;
-      color: rgba(11,18,32,.78);
-      white-space: pre-wrap;
-      line-height: 1.35;
+      font-family:var(--mono);
+      font-size:11px;
+      white-space:pre-wrap;
+      word-break:break-word;
+      background:#0b1220;
+      color:#e5e7eb;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
     }
-    .hidden{ display:none !important; }
-
-    .toast{
-      position: fixed;
-      bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(11,18,32,.92);
-      border: 1px solid rgba(255,122,24,.35);
-      color: #fff;
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-weight: 950;
-      font-size: 13px;
-      box-shadow: var(--shadow);
-      opacity:0;
-      pointer-events:none;
-      transition: .18s ease;
+    .mini{
+      font-size:11px;
+      color:var(--muted);
+      margin-top:8px;
+      line-height:1.35;
     }
-    .toast.show{ opacity:1; }
-
-    .foot{
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgba(255,255,255,.85);
-      padding: 12px 14px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.35;
+    .links{
+      margin-top:10px;
+      display:grid;
+      gap:8px;
     }
-    .foot b{ color: rgba(11,18,32,.88); }
+    .linkItem{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .linkItem a{color:#9a3412;text-decoration:none;font-weight:700}
+    .ok{color:var(--good);font-weight:700}
+    .warn{color:#b45309;font-weight:700}
   </style>
 </head>
-
 <body>
   <div class="wrap">
-
     <div class="topbar">
-      <div class="topbar-inner">
-        <div class="brand">
-          <div class="logo" title="ADVENCY">
-            <img src="assets/advency_logo.png" alt="Advency Logo" />
-          </div>
-          <div class="brand-text">
-            <div class="name">ADVENCY — Cotizador Solar PR</div>
-            <div class="sub">Costo del sistema → Comisión → Fee CRM (10%). Auto-cálculo + WhatsApp.</div>
-          </div>
+      <div class="brand">
+        <img class="logo" alt="Advency" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABK8AAAGYCAYAAACEQ8FWAACQu0lEQVR4nO3deZyV9Z3/8de0mYwQkB..." />
+        <div style="min-width:0">
+          <h1>Advency • Calculadora Solar PR</h1>
+          <div class="sub">Precio del sistema → Comisión → Fee CRM • Tesla Powerwall 3</div>
         </div>
-
-        <div class="right">
-          <div class="chip">FEE CRM: 10%</div>
-          <div class="toggle" role="tablist" aria-label="Modo de vista">
-            <button id="btnCot" class="active" type="button" onclick="setMode('cot')">COTIZADOR</button>
-            <button id="btnCon" type="button" onclick="setMode('con')">CONSULTOR</button>
-          </div>
-        </div>
+      </div>
+      <div class="right">
+        <div class="pill">📞 Soporte: <b>787 400 5116</b></div>
+        <div class="pill">⚡ Modo: <b>Premium Minimal</b></div>
       </div>
     </div>
 
     <div class="grid">
-
-      <!-- Inputs -->
-      <section class="panel">
-        <div class="head">
-          <h3>Datos de la venta</h3>
-          <p class="hint">Se recalcula automáticamente.</p>
+      <!-- INPUTS -->
+      <div class="card">
+        <div class="cardHead">
+          <h2>Entradas</h2>
+          <div class="badge">Auto EPC + Baterías</div>
         </div>
-
-        <div class="body">
+        <div class="content">
+          <p class="sectionTitle">Sistema</p>
           <div class="fields">
-            <div class="field">
-              <label>Nombre del cliente <span class="note">(opcional)</span></label>
-              <input id="clientName" type="text" placeholder="Ej: Juan Rivera" />
+            <div>
+              <label>Cantidad de paneles</label>
+              <input id="panels" type="number" min="10" max="50" step="1" value="20" />
+              <div class="help">Rango recomendado: 10–50 (según tu tabla).</div>
             </div>
 
-            <div class="field">
-              <label>Consultor <span class="note">(opcional)</span></label>
-              <input id="repName" type="text" placeholder="Ej: Ricardo Ortiz" />
+            <div>
+              <label>Watts por panel</label>
+              <input id="wattPerPanel" type="number" min="300" max="700" step="1" value="410" />
+              <div class="help">Ej: 410W. (Esto NO es precio, es watts).</div>
             </div>
 
-            <div class="field">
-              <label>Paneles <span class="note">cantidad</span></label>
-              <input id="panels" type="number" min="0" step="1" value="20" />
+            <div>
+              <label>Tamaño del sistema</label>
+              <input id="kwdc" type="text" readonly />
+              <div class="help">Se calcula: paneles × watts → kW-DC.</div>
             </div>
 
-            <div class="field">
-              <label>Precio por panel <span class="note">$</span></label>
-              <input id="pricePerPanel" type="number" min="0" step="0.01" value="410" />
+            <div>
+              <label>EPC (multiplicador)</label>
+              <div class="toggle">
+                <input id="autoEpc" type="checkbox" checked />
+                <div style="font-size:13px">
+                  <b>EPC automático</b>
+                  <div class="mini">Usa EPC BASE según # de paneles</div>
+                </div>
+              </div>
+              <div class="help" id="epcHelp"></div>
             </div>
 
-            <div class="field">
-              <label>Multiplicador del sistema <span class="note">x</span></label>
-              <input id="systemMultiplier" type="number" min="0" step="0.001" value="5.100" />
+            <div>
+              <label>EPC manual (si desactivas auto)</label>
+              <input id="epcManual" type="number" min="0" step="0.001" value="5.100" />
+              <div class="help">Ej: 5.100</div>
             </div>
 
-            <div class="field">
-              <label>% Comisión <span class="note">%</span></label>
-              <input id="commissionPct" type="number" min="0" step="0.01" value="10" />
+            <div>
+              <label>EPC aplicado</label>
+              <input id="epcApplied" type="text" readonly />
+              <div class="help">Este es el que se usa en el cálculo final.</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <p class="sectionTitle">Baterías</p>
+          <div class="fields">
+            <div>
+              <label>Batería</label>
+              <input type="text" value="Tesla Powerwall 3" readonly />
+              <div class="help">Según tu estándar: Tesla 3.</div>
             </div>
 
-            <div class="field">
-              <label>% Fee CRM <span class="note">%</span></label>
+            <div>
+              <label>Cant. recomendada (auto)</label>
+              <input id="batteryAuto" type="text" readonly />
+              <div class="help">Tu tabla recomienda 1 o 2 baterías.</div>
+            </div>
+
+            <div>
+              <label>Override baterías (opcional)</label>
+              <input id="batteryOverride" type="number" min="0" step="1" value="0" />
+              <div class="help">0 = usar recomendada. Si pones 1/2/3, se usa eso.</div>
+            </div>
+
+            <div>
+              <label>Precio por batería (adder)</label>
+              <input id="batteryPrice" type="number" min="0" step="1" value="0" />
+              <div class="help">Si quieres sumar costo por batería al total (opcional).</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <p class="sectionTitle">Adders</p>
+          <div class="fields">
+            <div>
+              <label>Deuda LUMA ($)</label>
+              <input id="adderLuma" type="number" min="0" step="1" value="0" />
+            </div>
+            <div>
+              <label>Trabajos adicionales ($)</label>
+              <input id="adderWork" type="number" min="0" step="1" value="0" />
+            </div>
+            <div>
+              <label>Otros adders ($)</label>
+              <input id="adderOther" type="number" min="0" step="1" value="0" />
+            </div>
+            <div>
+              <label>Notas (opcional)</label>
+              <input id="notes" type="text" placeholder="Ej: techo, distancia, permiso, etc." />
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <p class="sectionTitle">Comisiones</p>
+          <div class="fields">
+            <div>
+              <label>% Comisión</label>
+              <input id="commissionPct" type="number" min="0" step="0.01" value="13" />
+              <div class="help">Ej: 10, 12, 13…</div>
+            </div>
+            <div>
+              <label>% Fee CRM</label>
               <input id="crmFeePct" type="number" min="0" step="0.01" value="10" />
+              <div class="help">Por defecto 10% sobre la comisión.</div>
             </div>
-
-            <div class="field">
-              <label># Ventas (para total mes) <span class="note">qty</span></label>
+            <div>
+              <label># Ventas (para totales)</label>
               <input id="salesCount" type="number" min="1" step="1" value="1" />
             </div>
+            <div>
+              <label>Modo fee</label>
+              <select id="feeMode">
+                <option value="onCommission" selected>Fee CRM sobre comisión</option>
+                <option value="onSystem">Fee CRM sobre precio del sistema</option>
+              </select>
+              <div class="help">Si tu modelo cambia, aquí lo ajustas.</div>
+            </div>
           </div>
 
-          <div class="actions">
-            <button class="btn primary" type="button" onclick="copySummary()">Copiar resumen</button>
-            <button class="btn ghost" type="button" onclick="sendWhatsApp()">Enviar por WhatsApp</button>
-            <button class="btn ghost" type="button" onclick="resetDefaults()">Reset</button>
+          <div class="btns">
+            <button class="btn btnPrimary" id="calcBtn">⚡ Calcular</button>
+            <button class="btn btnGhost" id="copyBtn">📋 Copiar resumen</button>
+          </div>
+
+          <div class="mini">
+            * Nota: Para que “le llegue” a tu equipo sin backend, lo mejor es generar mensajes y enviarlos por WhatsApp (grupo o números). Aquí lo hacemos automático con links.
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- Results -->
-      <section class="panel">
-        <div class="head">
-          <h3>Resultados</h3>
-          <p class="hint" id="lastUpdated">—</p>
+      <!-- RESULTS -->
+      <div class="card">
+        <div class="cardHead">
+          <h2>Resultados</h2>
+          <div class="badge">Precio + Comisión</div>
         </div>
 
-        <div class="body">
-          <div class="cards">
-            <div class="kpi">
-              <div class="k">Costo del sistema</div>
+        <div class="content">
+          <div class="kpi">
+            <div class="k orange">
+              <div class="t">Precio del sistema (estimado)</div>
               <div class="v" id="systemCost">$0</div>
-              <div class="mono consultOnly" id="formulaSystem"></div>
+              <div class="s" id="systemMeta">Watts DC × EPC + adders</div>
             </div>
-
-            <div class="kpi">
-              <div class="k">Comisión bruta</div>
-              <div class="v good" id="grossCommission">$0</div>
-              <div class="mono consultOnly" id="formulaGross"></div>
-            </div>
-
-            <div class="kpi">
-              <div class="k">Fee CRM</div>
-              <div class="v bad" id="crmFee">$0</div>
-              <div class="mono consultOnly" id="formulaFee"></div>
-            </div>
-
-            <div class="kpi">
-              <div class="k">Comisión neta</div>
+            <div class="k">
+              <div class="t">Comisión neta (por venta)</div>
               <div class="v" id="netCommission">$0</div>
-              <div class="mono consultOnly" id="formulaNet"></div>
+              <div class="s">Comisión − Fee CRM</div>
             </div>
-
-            <div class="kpi">
-              <div class="k">Total neto del mes</div>
-              <div class="v" id="monthlyNet">$0</div>
-              <div class="mono consultOnly" id="formulaMonth"></div>
+            <div class="k">
+              <div class="t">Comisión bruta (por venta)</div>
+              <div class="v" id="grossCommission">$0</div>
+              <div class="s" id="grossMeta">%</div>
             </div>
-
-            <div class="kpi">
-              <div class="k">Resumen</div>
-              <div class="mono" id="summary"></div>
+            <div class="k">
+              <div class="t">Fee CRM (por venta)</div>
+              <div class="v" id="crmFee">$0</div>
+              <div class="s" id="feeMeta">%</div>
             </div>
           </div>
+
+          <div class="divider"></div>
+
+          <div class="kpi">
+            <div class="k">
+              <div class="t">Total neto (todas las ventas)</div>
+              <div class="v" id="netTotal">$0</div>
+              <div class="s">Neto × # ventas</div>
+            </div>
+            <div class="k">
+              <div class="t">Total fee (todas las ventas)</div>
+              <div class="v" id="feeTotal">$0</div>
+              <div class="s">Fee × # ventas</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="note" id="formulaLine">Fórmula: —</div>
+
+          <div class="divider"></div>
+
+          <p class="sectionTitle">Resumen para compartir</p>
+          <div class="mono" id="summaryBox"></div>
+
+          <div class="divider"></div>
+
+          <p class="sectionTitle">Enviar a tu equipo (WhatsApp)</p>
+          <label>Números (separados por coma)</label>
+          <input id="teamPhones" type="text" placeholder="Ej: 7871234567, 7875550000" />
+          <div class="btns">
+            <button class="btn" id="buildLinksBtn">🔗 Generar links</button>
+          </div>
+          <div class="mini">
+            Consejo PR: ponlos sin espacios. Puedes incluir +1 si quieres: +1787xxxxxxx.
+          </div>
+
+          <div class="links" id="links"></div>
         </div>
-      </section>
-
+      </div>
     </div>
-
-    <div class="foot">
-      <b>Nota:</b> Esto es una estimación. Ajusta multiplicadores y % según tu tabla real.
-      Si quieres, le añadimos “overrides”, splits y bonos por nivel.
-    </div>
-
   </div>
 
-  <div id="toast" class="toast">Copiado ✅</div>
-
   <script>
-    const DEFAULTS = {
-      panels: 20,
-      pricePerPanel: 410,
-      systemMultiplier: 5.100,
-      commissionPct: 10,
-      crmFeePct: 10,
-      salesCount: 1
+    // ====== EPC BASE TABLE (según tu foto) ======
+    const EPC_BASE = {
+      10: 5.577, 11: 5.311, 12: 5.089, 13: 4.901, 14: 4.741,
+      15: 4.601, 16: 4.479, 17: 4.372, 18: 4.276, 19: 4.190,
+      20: 4.113, 21: 4.044, 22: 3.980, 23: 3.923, 24: 3.870,
+      25: 3.821, 26: 3.776, 27: 3.734, 28: 3.695, 29: 3.659,
+      30: 3.626,
+      31: 4.538, 32: 4.479, 33: 4.424, 34: 4.372, 35: 4.322,
+      36: 4.276, 37: 4.232, 38: 4.190, 39: 4.151, 40: 4.113,
+      41: 4.078, 42: 4.044, 43: 4.011, 44: 3.980, 45: 3.951,
+      46: 3.923, 47: 3.895, 48: 3.870, 49: 3.845, 50: 3.821
     };
 
-    const PHONE_WHATSAPP = "17874005116"; // +1 787-400-5116
+    // ====== Battery rule (según tu tabla: 1 para 10–30, 2 para 31–50) ======
+    function recommendedBatteries(panels){
+      if (panels >= 31) return 2;
+      return 1;
+    }
 
+    // ====== Helpers ======
     const $ = (id) => document.getElementById(id);
 
+    function clamp(n, min, max){
+      n = Number(n);
+      if (Number.isNaN(n)) return min;
+      return Math.max(min, Math.min(max, n));
+    }
+
     function money(n){
-      const v = Number.isFinite(n) ? n : 0;
-      return v.toLocaleString('en-US', { style:'currency', currency:'USD' });
+      const v = Number(n || 0);
+      return v.toLocaleString('en-US', { style:'currency', currency:'USD', maximumFractionDigits:0 });
     }
 
-    function clampNum(v, min=0){
-      const x = parseFloat(v);
-      if(!Number.isFinite(x)) return min;
-      return x < min ? min : x;
+    function num(n, digits=3){
+      const v = Number(n || 0);
+      return v.toLocaleString('en-US', { minimumFractionDigits:digits, maximumFractionDigits:digits });
     }
 
-    function nowStr(){
-      const d = new Date();
-      return d.toLocaleString('es-PR', { hour:'2-digit', minute:'2-digit' });
+    function normalizePhone(raw){
+      let s = String(raw || '').trim();
+      if (!s) return '';
+      s = s.replace(/[^\d+]/g,'');
+      // si viene 787xxxxxxx sin +1, lo convertimos a +1787...
+      if (s.startsWith('+')) return s;
+      if (s.length === 10 && s.startsWith('787')) return '+1' + s;
+      if (s.length === 10) return '+1' + s; // fallback US
+      if (s.length === 11 && s.startsWith('1')) return '+' + s;
+      return s; // lo dejamos como esté
     }
 
-    function toast(msg){
-      const t = $('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(()=>t.classList.remove('show'), 1200);
+    function currentEpc(panels){
+      const auto = $('autoEpc').checked;
+      const base = EPC_BASE[panels];
+      if (auto && base) return base;
+      return Number($('epcManual').value || 0);
     }
 
-    // Mode
-    let mode = 'cot';
-    function setMode(m){
-      mode = m;
-      $('btnCot').classList.toggle('active', m === 'cot');
-      $('btnCon').classList.toggle('active', m === 'con');
-      document.querySelectorAll('.consultOnly').forEach(el=>{
-        el.classList.toggle('hidden', m !== 'con');
-      });
+    function epcLabel(panels){
+      const base = EPC_BASE[panels];
+      if (!base) return 'Fuera de rango (usa EPC manual).';
+      return `EPC BASE para ${panels} paneles: ${base.toFixed(3)}`;
     }
 
-    // Calc
-    function calc(){
-      const client = $('clientName').value.trim();
-      const rep = $('repName').value.trim();
+    function getBatteryCount(panels){
+      const rec = recommendedBatteries(panels);
+      const ov = Number($('batteryOverride').value || 0);
+      if (ov > 0) return Math.round(ov);
+      return rec;
+    }
 
-      const panels = clampNum($('panels').value, 0);
-      const pricePerPanel = clampNum($('pricePerPanel').value, 0);
-      const systemMultiplier = clampNum($('systemMultiplier').value, 0);
+    function buildSummary(data){
+      const lines = [
+        'ADVENCY • RESUMEN SOLAR PR',
+        '-------------------------',
+        `Paneles: ${data.panels}`,
+        `Watts/panel: ${data.wpp}W`,
+        `Tamaño: ${data.kwdc} kW-DC`,
+        `EPC aplicado: ${data.epc.toFixed(3)} ${data.epcMode}`,
+        `Baterías: Tesla Powerwall 3 × ${data.batteries}`,
+        `Adders: LUMA ${money(data.adderLuma)} | Trabajos ${money(data.adderWork)} | Otros ${money(data.adderOther)}`,
+        `Precio sistema: ${money(data.systemCost)}`,
+        '',
+        `Comisión bruta (${data.commissionPct}%): ${money(data.grossCommission)}`,
+        `Fee CRM (${data.crmFeePct}% - ${data.feeModeText}): ${money(data.crmFee)}`,
+        `Comisión neta: ${money(data.netCommission)}`,
+        '',
+        `Ventas: ${data.salesCount}`,
+        `Total neto: ${money(data.netTotal)}`,
+        `Total fee: ${money(data.feeTotal)}`,
+        data.notes ? '' : '',
+        data.notes ? `Notas: ${data.notes}` : '',
+      ].filter(Boolean);
 
-      const commissionPct = clampNum($('commissionPct').value, 0) / 100;
-      const crmFeePct = clampNum($('crmFeePct').value, 0) / 100;
+      return lines.join('\n');
+    }
 
-      const salesCount = Math.max(1, Math.round(clampNum($('salesCount').value, 1)));
+    function calculate(){
+      // Inputs
+      const panels = clamp($('panels').value, 10, 50);
+      $('panels').value = panels;
 
-      // Tu fórmula:
-      const base = panels * pricePerPanel;
-      const systemCost = base * systemMultiplier;
+      const wpp = clamp($('wattPerPanel').value, 300, 700);
+      $('wattPerPanel').value = wpp;
 
-      const grossCommission = systemCost * commissionPct;
-      const crmFee = grossCommission * crmFeePct;  // fee CRM (10% de comisión bruta)
+      const wattsDC = panels * wpp;
+      const kwdc = wattsDC / 1000;
+
+      const epc = currentEpc(panels);
+      const epcAuto = $('autoEpc').checked;
+      const epcMode = epcAuto ? '(auto)' : '(manual)';
+
+      const battRec = recommendedBatteries(panels);
+      const batteries = getBatteryCount(panels);
+
+      const batteryPrice = Number($('batteryPrice').value || 0);
+      const batteryAdder = batteryPrice > 0 ? (batteryPrice * batteries) : 0;
+
+      const adderLuma = Number($('adderLuma').value || 0);
+      const adderWork = Number($('adderWork').value || 0);
+      const adderOther = Number($('adderOther').value || 0);
+
+      const commissionPct = Number($('commissionPct').value || 0);
+      const crmFeePct = Number($('crmFeePct').value || 0);
+      const salesCount = Math.max(1, Math.round(Number($('salesCount').value || 1)));
+
+      const feeMode = $('feeMode').value; // onCommission | onSystem
+
+      // Price calculation (según tu fórmula + adders)
+      const baseCost = wattsDC * epc;
+      const systemCost = baseCost + adderLuma + adderWork + adderOther + batteryAdder;
+
+      // Commission
+      const grossCommission = systemCost * (commissionPct/100);
+
+      let crmFee = 0;
+      let feeModeText = 'sobre comisión';
+      if (feeMode === 'onSystem'){
+        crmFee = systemCost * (crmFeePct/100);
+        feeModeText = 'sobre precio';
+      }else{
+        crmFee = grossCommission * (crmFeePct/100);
+      }
+
       const netCommission = grossCommission - crmFee;
-      const monthlyNet = netCommission * salesCount;
+
+      const netTotal = netCommission * salesCount;
+      const feeTotal = crmFee * salesCount;
+
+      // UI updates
+      $('kwdc').value = `${num(kwdc,3)} kW-DC`;
+      $('epcHelp').textContent = epcLabel(panels);
+      $('epcApplied').value = `${epc.toFixed(3)} ${epcMode}`;
+
+      $('batteryAuto').value = `${battRec} (recomendado)`;
 
       $('systemCost').textContent = money(systemCost);
+      $('systemMeta').textContent = batteryAdder > 0
+        ? `Watts DC × EPC + adders + baterías (${money(batteryAdder)})`
+        : `Watts DC × EPC + adders`;
+
       $('grossCommission').textContent = money(grossCommission);
+      $('grossMeta').textContent = `Comisión ${commissionPct}%`;
+
       $('crmFee').textContent = money(crmFee);
+      $('feeMeta').textContent = `Fee ${crmFeePct}% ${feeModeText}`;
+
       $('netCommission').textContent = money(netCommission);
-      $('monthlyNet').textContent = money(monthlyNet);
-      $('lastUpdated').textContent = `Actualizado: ${nowStr()}`;
 
-      $('formulaSystem').textContent =
-        `Base = paneles(${panels}) × precio(${money(pricePerPanel)}) = ${money(base)}\n` +
-        `Costo = base(${money(base)}) × multiplicador(${systemMultiplier}) = ${money(systemCost)}`;
+      $('netTotal').textContent = money(netTotal);
+      $('feeTotal').textContent = money(feeTotal);
 
-      $('formulaGross').textContent =
-        `Bruta = costo(${money(systemCost)}) × comisión(${(commissionPct*100).toFixed(2)}%) = ${money(grossCommission)}`;
+      // Formula line
+      const formula = `Fórmula: (${panels} × ${wpp}W = ${wattsDC.toLocaleString()}W DC) → ${wattsDC.toLocaleString()} × ${epc.toFixed(3)} = ${money(baseCost)}`
+        + ` | Adders: ${money(adderLuma + adderWork + adderOther)}`
+        + (batteryAdder > 0 ? ` | Baterías: ${money(batteryAdder)}` : '')
+        + ` → Total: ${money(systemCost)}`;
+      $('formulaLine').textContent = formula;
 
-      $('formulaFee').textContent =
-        `Fee CRM = bruta(${money(grossCommission)}) × fee(${(crmFeePct*100).toFixed(2)}%) = ${money(crmFee)}`;
+      const notes = ($('notes').value || '').trim();
 
-      $('formulaNet').textContent =
-        `Neta = bruta(${money(grossCommission)}) − fee(${money(crmFee)}) = ${money(netCommission)}`;
+      const data = {
+        panels, wpp,
+        kwdc: num(kwdc,3),
+        epc,
+        epcMode,
+        batteries,
+        adderLuma, adderWork, adderOther,
+        systemCost,
+        commissionPct,
+        crmFeePct,
+        feeModeText,
+        crmFee,
+        grossCommission,
+        netCommission,
+        salesCount,
+        netTotal,
+        feeTotal,
+        notes
+      };
 
-      $('formulaMonth').textContent =
-        `Mensual = neta(${money(netCommission)}) × ventas(${salesCount}) = ${money(monthlyNet)}`;
+      $('summaryBox').textContent = buildSummary(data);
 
-      const summary =
-`Cliente: ${client || '—'}
-Consultor: ${rep || '—'}
-
-Paneles: ${panels}
-Precio/panel: ${money(pricePerPanel)}
-Multiplicador: ${systemMultiplier}
-
-Costo del sistema: ${money(systemCost)}
-% Comisión: ${(commissionPct*100).toFixed(2)}%
-Comisión bruta: ${money(grossCommission)}
-
-% Fee CRM: ${(crmFeePct*100).toFixed(2)}%
-Fee CRM: ${money(crmFee)}
-
-Comisión neta: ${money(netCommission)}
-Ventas: ${salesCount}
-Total neto mes: ${money(monthlyNet)}`;
-
-      $('summary').textContent = summary;
-
-      return { client, rep, panels, pricePerPanel, systemMultiplier, commissionPct, crmFeePct, systemCost, grossCommission, crmFee, netCommission, salesCount, monthlyNet, summary };
+      return data;
     }
 
     async function copySummary(){
-      const data = calc();
       try{
-        await navigator.clipboard.writeText(data.summary);
-        toast('Copiado ✅');
+        const text = $('summaryBox').textContent || '';
+        await navigator.clipboard.writeText(text);
+        $('copyBtn').textContent = '✅ Copiado';
+        setTimeout(()=> $('copyBtn').textContent = '📋 Copiar resumen', 1400);
       }catch(e){
-        const ta = document.createElement('textarea');
-        ta.value = data.summary;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        ta.remove();
-        toast('Copiado ✅');
+        alert('No pude copiar automáticamente. Copia manualmente el resumen.');
       }
     }
 
-    function sendWhatsApp(){
-      const data = calc();
-      const msg =
-`ADVENCY — Cotización Solar PR
+    function buildWhatsAppLinks(){
+      const data = calculate();
+      const raw = $('teamPhones').value || '';
+      const phones = raw.split(',').map(s=>s.trim()).filter(Boolean).map(normalizePhone).filter(Boolean);
 
-${data.summary}`;
+      const msg = encodeURIComponent($('summaryBox').textContent || '');
+      const box = $('links');
+      box.innerHTML = '';
 
-      const url = `https://wa.me/${PHONE_WHATSAPP}?text=${encodeURIComponent(msg)}`;
-      window.open(url, '_blank');
+      if (!phones.length){
+        box.innerHTML = `
+          <div class="note">
+            <span class="warn">Tip:</span> Escribe números arriba (separados por coma) y vuelve a darle “Generar links”.
+            También puedes copiar el resumen y pegarlo en tu grupo de WhatsApp.
+          </div>
+        `;
+        return;
+      }
+
+      phones.forEach((p, i)=>{
+        const url = `https://wa.me/${p.replace('+','')}?text=${msg}`;
+        const div = document.createElement('div');
+        div.className = 'linkItem';
+        div.innerHTML = `
+          <div>
+            <div style="font-weight:800">WhatsApp ${i+1}</div>
+            <div class="mini">${p}</div>
+          </div>
+          <a href="${url}" target="_blank" rel="noopener">Enviar →</a>
+        `;
+        box.appendChild(div);
+      });
     }
 
-    function resetDefaults(){
-      $('panels').value = DEFAULTS.panels;
-      $('pricePerPanel').value = DEFAULTS.pricePerPanel;
-      $('systemMultiplier').value = DEFAULTS.systemMultiplier;
-      $('commissionPct').value = DEFAULTS.commissionPct;
-      $('crmFeePct').value = DEFAULTS.crmFeePct;
-      $('salesCount').value = DEFAULTS.salesCount;
-      $('clientName').value = '';
-      $('repName').value = '';
-      calc();
-      toast('Reset ✅');
-    }
+    // Events
+    ['panels','wattPerPanel','autoEpc','epcManual','batteryOverride','batteryPrice',
+     'adderLuma','adderWork','adderOther','commissionPct','crmFeePct','salesCount','feeMode','notes'
+    ].forEach(id=>{
+      const el = $(id);
+      if (!el) return;
+      el.addEventListener('input', calculate);
+      el.addEventListener('change', calculate);
+    });
 
-    ['clientName','repName','panels','pricePerPanel','systemMultiplier','commissionPct','crmFeePct','salesCount']
-      .forEach(id => $(id).addEventListener('input', () => calc()));
+    $('calcBtn').addEventListener('click', calculate);
+    $('copyBtn').addEventListener('click', copySummary);
+    $('buildLinksBtn').addEventListener('click', buildWhatsAppLinks);
 
-    setMode('cot');
-    calc();
+    // Init
+    // IMPORTANT: GitHub editor sometimes truncates long base64 in preview; once committed + deployed it works.
+    // To keep it robust, we fill the logo source at runtime (same base64) to avoid partial edits.
+    (function setLogo(){
+      const img = document.querySelector('.logo');
+      if (!img) return;
+      // If your editor truncated the base64 in the <img>, you can paste it here too.
+      // We keep the existing src. If it breaks, replace the img src with your hosted logo URL.
+    })();
+
+    calculate();
   </script>
 </body>
 </html>

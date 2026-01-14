@@ -2,17 +2,20 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Advency • Calculadora Solar</title>
+
   <style>
     :root{
-      --bg:#fff;
+      --bg:#ffffff;
       --text:#0b1220;
       --muted:#667085;
-      --line:#eaecf0;
-      --orange:#ff6a00;
-      --soft:#fff3eb;
-      --shadow:0 18px 55px rgba(2,6,23,.08);
+      --line:#eaecef;
+      --card:#ffffff;
+      --soft:#fff6eb;
+      --orange:#ff7a00;
+      --orange2:#ff9a3d;
+      --shadow: 0 18px 55px rgba(2,6,23,.08);
       --r:18px;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
@@ -20,296 +23,522 @@
     body{
       margin:0;
       font-family:var(--sans);
+      background:var(--bg);
       color:var(--text);
-      background:
-        radial-gradient(900px 450px at 85% -10%, rgba(255,106,0,.10), transparent 60%),
-        radial-gradient(900px 450px at 10% -10%, rgba(255,106,0,.06), transparent 60%),
-        var(--bg);
-      padding: 18px;
     }
-    .wrap{max-width:900px;margin:0 auto}
-    .top{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:14px 16px;border:1px solid var(--line);border-radius:20px;
-      background:rgba(255,255,255,.86);backdrop-filter: blur(10px);
-      box-shadow: 0 10px 30px rgba(2,6,23,.05);
-    }
-    .brand{display:flex;align-items:center;gap:12px;min-width:0}
-    .brand img{height:30px;width:auto;display:block}
-    .brand .t{min-width:0}
-    .brand .t b{display:block;font-size:14px;letter-spacing:.2px}
-    .brand .t span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .chip{
-      font-size:12px;font-weight:800;color:#9a3412;
-      background:var(--soft);border:1px solid rgba(255,106,0,.25);
-      padding:8px 10px;border-radius:999px;white-space:nowrap;
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 14px 28px;
     }
 
+    /* Top brand bar */
+    .topbar{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding: 12px 14px;
+      border:1px solid var(--line);
+      border-radius: 999px;
+      background: linear-gradient(180deg, #fff, #fff);
+      box-shadow: 0 10px 35px rgba(2,6,23,.06);
+    }
+    .logo{
+      height:34px;
+      width:auto;
+      display:block;
+    }
+    .brand{
+      display:flex;
+      flex-direction:column;
+      line-height:1.15;
+      gap:3px;
+      min-width: 0;
+    }
+    .brand h1{
+      margin:0;
+      font-size:16px;
+      font-weight:700;
+      letter-spacing:.2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .brand p{
+      margin:0;
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    /* Main card */
     .card{
       margin-top:14px;
-      border:1px solid var(--line);border-radius:var(--r);
-      background:rgba(255,255,255,.92);
-      box-shadow:var(--shadow);
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      background: var(--card);
+      box-shadow: var(--shadow);
       overflow:hidden;
     }
-    .card .in{padding:16px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media (max-width:720px){.grid{grid-template-columns:1fr}}
-    label{font-size:12px;color:var(--muted);display:block;margin:0 0 6px}
-    input,select{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      font-size:14px;
-      outline:none;
-      background:#fff;
-      color:var(--text);
+    .cardHead{
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(180deg, #fff, #fffaf3);
     }
-    input:focus,select:focus{
-      border-color: rgba(255,106,0,.55);
-      box-shadow: 0 0 0 4px rgba(255,106,0,.12);
+    .cardHead .hint{
+      font-size:12px;
+      color:var(--muted);
     }
 
-    .results{
-      border-top:1px solid var(--line);
-      padding:16px;
+    .grid{
       display:grid;
       grid-template-columns: 1fr 1fr;
       gap:12px;
-      background: linear-gradient(180deg, rgba(255,106,0,.05), transparent 70%);
+      padding: 14px 16px 4px;
     }
-    @media (max-width:720px){.results{grid-template-columns:1fr}}
+    @media (max-width: 820px){
+      .grid{grid-template-columns:1fr}
+      .topbar{border-radius: var(--r)}
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    label{
+      font-size:12px;
+      color:var(--muted);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    input, select{
+      width:100%;
+      height:44px;
+      padding: 10px 12px;
+      border:1px solid var(--line);
+      border-radius: 12px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+      transition: box-shadow .15s ease, border-color .15s ease;
+    }
+    input:focus, select:focus{
+      border-color: rgba(255,122,0,.45);
+      box-shadow: 0 0 0 4px rgba(255,122,0,.12);
+    }
+    .row2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .row3{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 520px){
+      .row2,.row3{grid-template-columns:1fr}
+    }
+
     .kpi{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      padding: 12px 16px 16px;
+    }
+    @media (max-width: 820px){
+      .kpi{grid-template-columns:1fr}
+    }
+    .box{
       border:1px solid var(--line);
-      border-radius:16px;
-      padding:12px;
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: #fff;
+    }
+    .box.soft{
+      background: linear-gradient(180deg, var(--soft), #fff);
+      border-color: rgba(255,122,0,.18);
+    }
+    .box .t{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:6px;
+    }
+    .box .v{
+      font-size:28px;
+      font-weight:800;
+      letter-spacing: .2px;
+    }
+    .box .s{
+      margin-top:6px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .footer{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 12px 16px 16px;
+      border-top:1px solid var(--line);
       background:#fff;
     }
-    .kpi .k{font-size:11px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
-    .kpi .v{margin-top:8px;font-size:22px;font-weight:900}
-    .kpi.orange{border-color: rgba(255,106,0,.22);background: linear-gradient(180deg, rgba(255,106,0,.08), #fff)}
-    .row{
-      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
-      padding: 12px 16px;border-top:1px solid var(--line);background:#fff;
+    .formula{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.35;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      max-width: 62%;
     }
-    .mini{font-size:12px;color:var(--muted);line-height:1.35}
+    @media (max-width: 820px){
+      .formula{max-width: 100%; white-space: normal}
+      .footer{flex-direction:column; align-items:stretch}
+      .actions{justify-content:flex-end}
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
     .btn{
+      height:40px;
+      padding: 0 14px;
+      border-radius: 999px;
       border:1px solid var(--line);
-      border-radius:14px;
-      padding:10px 12px;
       background:#fff;
-      font-weight:900;
+      font-weight:700;
+      font-size:13px;
       cursor:pointer;
     }
-    .btn.primary{
+    .btnPrimary{
+      border-color: transparent;
+      background: linear-gradient(180deg, var(--orange2), var(--orange));
       color:#fff;
-      border-color: rgba(255,106,0,.65);
-      background: linear-gradient(180deg, var(--orange), #ff7b2c);
-      box-shadow: 0 12px 22px rgba(255,106,0,.22);
+      box-shadow: 0 10px 22px rgba(255,122,0,.25);
     }
-    pre{
-      margin:0;
-      padding:12px 16px;
-      border-top:1px solid var(--line);
-      background:#0b1220;
-      color:#e5e7eb;
-      font-size:12px;
-      overflow:auto;
-      white-space:pre-wrap;
-      word-break:break-word;
+    .btn:active{transform: translateY(1px)}
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(11,18,32,.92);
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .2s ease;
     }
+    .toast.show{opacity:1}
   </style>
 </head>
+
 <body>
   <div class="wrap">
 
-    <div class="top">
+    <!-- TOP BAR (sin PR Solar) -->
+    <div class="topbar">
+      <img src="logo.png" alt="Advency" class="logo" />
       <div class="brand">
-        <img src="logo.png" alt="Advency" onerror="this.style.display='none'">
-        <div class="t">
-          <b>Advency • Calculadora Solar</b>
-          <span>Paneles → Watts DC → EPC → Precio → Comisión → Fee</span>
-        </div>
+        <h1>Advency • Calculadora Solar</h1>
+        <p>Paneles → Watts DC → EPC → Precio → Comisión → Fee</p>
       </div>
-      <div class="chip">PR Solar</div>
     </div>
 
     <div class="card">
-      <div class="in">
-        <div class="grid">
-          <div>
-            <label>Paneles</label>
-            <input id="panels" type="number" min="1" step="1" value="10">
+      <div class="cardHead">
+        <div class="hint">Usa EPC base según tu tabla. Baterías: Tesla 3 (según cantidad).</div>
+      </div>
+
+      <div class="grid">
+        <div class="row2">
+          <div class="field">
+            <label for="panels">Paneles</label>
+            <input id="panels" type="number" min="0" step="1" value="10" />
           </div>
 
-          <div>
-            <label>Watts por panel</label>
-            <input id="wpp" type="number" min="100" step="1" value="410">
+          <div class="field">
+            <label for="wattsPerPanel">Watts por panel</label>
+            <input id="wattsPerPanel" type="number" min="0" step="1" value="410" />
           </div>
+        </div>
 
-          <div>
-            <label>EPC</label>
+        <div class="row2">
+          <div class="field">
+            <label for="epcMode">EPC</label>
             <select id="epcMode">
-              <option value="auto">Auto (tabla 10–50)</option>
-              <option value="manual" selected>Manual</option>
+              <option value="table" selected>Auto (por tabla)</option>
+              <option value="manual">Manual</option>
             </select>
           </div>
 
-          <div>
-            <label>EPC manual</label>
-            <input id="epcManual" type="number" min="0" step="0.001" value="5.100">
+          <div class="field">
+            <label for="epcManual">EPC manual</label>
+            <input id="epcManual" type="number" min="0" step="0.001" value="5.100" />
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label for="adders">Adders ($) (LUMA / trabajos / otros)</label>
+            <input id="adders" type="number" step="1" value="0" />
           </div>
 
-          <div>
-            <label>Adders ($) (LUMA / trabajos / otros)</label>
-            <input id="adders" type="number" min="0" step="1" value="0">
-          </div>
-
-          <div>
-            <label>% Comisión / % Fee CRM</label>
-            <div class="grid" style="grid-template-columns:1fr 1fr;gap:10px">
-              <input id="commPct" type="number" min="0" step="0.01" value="13" placeholder="% comisión">
-              <input id="feePct" type="number" min="0" step="0.01" value="10" placeholder="% fee">
+          <div class="row2">
+            <div class="field">
+              <label for="commissionPct">% Comisión</label>
+              <input id="commissionPct" type="number" min="0" step="0.01" value="13" />
+            </div>
+            <div class="field">
+              <label for="crmFeePct">% Fee CRM</label>
+              <input id="crmFeePct" type="number" min="0" step="0.01" value="10" />
             </div>
           </div>
         </div>
       </div>
 
-      <div class="results">
-        <div class="kpi orange">
-          <div class="k">Precio del sistema</div>
-          <div class="v" id="price">$0</div>
+      <!-- KPIs -->
+      <div class="kpi">
+        <div class="box soft">
+          <div class="t">Precio del sistema</div>
+          <div class="v" id="systemPrice">$0</div>
+          <div class="s" id="batteryHint">Baterías Tesla 3: —</div>
         </div>
-        <div class="kpi">
-          <div class="k">Watts DC / kW-DC</div>
-          <div class="v" id="size">—</div>
+
+        <div class="box">
+          <div class="t">Watts DC / kW-DC</div>
+          <div class="v" id="wattsKpi">0 W</div>
+          <div class="s" id="kwKpi">0.00 kW-DC</div>
         </div>
-        <div class="kpi">
-          <div class="k">Comisión bruta</div>
-          <div class="v" id="gross">$0</div>
+
+        <div class="box">
+          <div class="t">Comisión bruta</div>
+          <div class="v" id="grossCommission">$0</div>
+          <div class="s" id="grossNote">Precio × % comisión</div>
         </div>
-        <div class="kpi">
-          <div class="k">Fee / Neto</div>
-          <div class="v" id="net">—</div>
+
+        <div class="box">
+          <div class="t">Fee / Neto</div>
+          <div class="v" id="feeNet">$0 • $0</div>
+          <div class="s" id="netNote">Fee CRM y comisión neta</div>
         </div>
       </div>
 
-      <div class="row">
-        <div class="mini" id="epcInfo">EPC aplicado: —</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <div class="footer">
+        <div class="formula" id="formulaLine">—</div>
+        <div class="actions">
           <button class="btn" id="copyBtn">Copiar</button>
-          <button class="btn primary" id="shareBtn">Compartir</button>
+          <button class="btn btnPrimary" id="shareBtn">Compartir</button>
         </div>
       </div>
-
-      <pre id="summary"></pre>
     </div>
-
   </div>
 
-  <script>
-    // ====== EDITA AQUÍ TU TABLA EPC BASE (si quieres auto exacto) ======
-    // Si tu tabla cambia, reemplaza estos valores.
-    const EPC_BASE = {
-      10: 5.577, 11: 5.311, 12: 5.089, 13: 4.901, 14: 4.741,
-      15: 4.601, 16: 4.479, 17: 4.372, 18: 4.276, 19: 4.190,
-      20: 4.113, 21: 4.044, 22: 3.980, 23: 3.923, 24: 3.870,
-      25: 3.821, 26: 3.776, 27: 3.734, 28: 3.695, 29: 3.659,
-      30: 3.626,
-      31: 4.538, 32: 4.479, 33: 4.424, 34: 4.372, 35: 4.322,
-      36: 4.276, 37: 4.232, 38: 4.190, 39: 4.151, 40: 4.113,
-      41: 4.078, 42: 4.044, 43: 4.011, 44: 3.980, 45: 3.951,
-      46: 3.923, 47: 3.895, 48: 3.870, 49: 3.845, 50: 3.821
-    };
+  <div class="toast" id="toast">Copiado ✅</div>
 
-    const $ = (id) => document.getElementById(id);
+  <script>
+    // EPC table (basado en tu screenshot / tabla)
+    // Cantidad paneles: 10-50
+    // EPC BASE y baterías Tesla (1 o 2)
+    const EPC_TABLE = [
+      {p:10, epc:5.577, bat:1},
+      {p:11, epc:5.311, bat:1},
+      {p:12, epc:5.089, bat:1},
+      {p:13, epc:4.901, bat:1},
+      {p:14, epc:4.741, bat:1},
+      {p:15, epc:4.601, bat:1},
+      {p:16, epc:4.479, bat:1},
+      {p:17, epc:4.372, bat:1},
+      {p:18, epc:4.276, bat:1},
+      {p:19, epc:4.190, bat:1},
+      {p:20, epc:4.113, bat:1},
+      {p:21, epc:4.044, bat:1},
+      {p:22, epc:3.980, bat:1},
+      {p:23, epc:3.923, bat:1},
+      {p:24, epc:3.870, bat:1},
+      {p:25, epc:3.821, bat:1},
+      {p:26, epc:3.776, bat:1},
+      {p:27, epc:3.734, bat:1},
+      {p:28, epc:3.695, bat:1},
+      {p:29, epc:3.659, bat:1},
+      {p:30, epc:3.626, bat:1},
+
+      {p:31, epc:4.538, bat:2},
+      {p:32, epc:4.479, bat:2},
+      {p:33, epc:4.424, bat:2},
+      {p:34, epc:4.372, bat:2},
+      {p:35, epc:4.322, bat:2},
+      {p:36, epc:4.276, bat:2},
+      {p:37, epc:4.232, bat:2},
+      {p:38, epc:4.190, bat:2},
+      {p:39, epc:4.151, bat:2},
+      {p:40, epc:4.113, bat:2},
+      {p:41, epc:4.078, bat:2},
+      {p:42, epc:4.044, bat:2},
+      {p:43, epc:4.011, bat:2},
+      {p:44, epc:3.980, bat:2},
+      {p:45, epc:3.951, bat:2},
+      {p:46, epc:3.923, bat:2},
+      {p:47, epc:3.895, bat:2},
+      {p:48, epc:3.870, bat:2},
+      {p:49, epc:3.845, bat:2},
+      {p:50, epc:3.821, bat:2},
+    ];
+
+    const $ = (id)=>document.getElementById(id);
 
     function money(n){
-      const v = Number(n||0);
-      return v.toLocaleString('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0});
+      if(!isFinite(n)) n = 0;
+      return n.toLocaleString('en-US',{style:'currency', currency:'USD', maximumFractionDigits:0});
+    }
+    function num(n, d=3){
+      if(!isFinite(n)) n = 0;
+      return n.toLocaleString('en-US',{minimumFractionDigits:d, maximumFractionDigits:d});
     }
 
-    function calc(){
-      const panels = Math.max(1, Math.round(Number($('panels').value||0)));
-      const wpp = Math.max(0, Number($('wpp').value||0));
-      const wattsDC = panels * wpp;
-      const kwdc = wattsDC / 1000;
+    function getTableRow(panels){
+      // si cae fuera del rango, usa el más cercano
+      let best = EPC_TABLE[0];
+      let bestDiff = Math.abs(panels - best.p);
+      for(const r of EPC_TABLE){
+        const diff = Math.abs(panels - r.p);
+        if(diff < bestDiff){
+          best = r; bestDiff = diff;
+        }
+      }
+      return best;
+    }
 
+    function compute(){
+      const panels = Math.max(0, parseInt($('panels').value || '0', 10));
+      const wattsPerPanel = Math.max(0, parseInt($('wattsPerPanel').value || '0', 10));
+      const adders = parseFloat($('adders').value || '0') || 0;
+
+      const commissionPct = (parseFloat($('commissionPct').value || '0') || 0) / 100;
+      const crmFeePct = (parseFloat($('crmFeePct').value || '0') || 0) / 100;
+
+      const row = getTableRow(panels);
       const epcMode = $('epcMode').value;
-      const epcAuto = EPC_BASE[panels];
-      const epcManual = Number($('epcManual').value||0);
-      const epc = (epcMode === 'auto' && epcAuto) ? epcAuto : epcManual;
 
-      const adders = Math.max(0, Number($('adders').value||0));
-      const commPct = Math.max(0, Number($('commPct').value||0))/100;
-      const feePct = Math.max(0, Number($('feePct').value||0))/100;
+      const epc = epcMode === 'manual'
+        ? (parseFloat($('epcManual').value || '0') || 0)
+        : row.epc;
 
-      const base = wattsDC * epc;
-      const price = base + adders;
+      const wattsDC = panels * wattsPerPanel;         // en W
+      const kwDC = wattsDC / 1000;                    // en kW
 
-      const gross = price * commPct;
-      const fee = gross * feePct;
-      const net = gross - fee;
+      // Fórmula: (paneles * watts) * EPC + adders
+      const basePrice = wattsDC * epc;
+      const systemPrice = basePrice + adders;
 
-      $('price').textContent = money(price);
-      $('size').textContent = `${wattsDC.toLocaleString()} W • ${kwdc.toFixed(2)} kW-DC`;
-      $('gross').textContent = money(gross);
-      $('net').textContent = `${money(fee)} • ${money(net)}`;
+      const grossCommission = systemPrice * commissionPct;
+      const crmFee = grossCommission * crmFeePct;
+      const netCommission = grossCommission - crmFee;
 
-      $('epcInfo').textContent =
-        `EPC aplicado: ${epc.toFixed(3)} ${epcMode==='auto' && epcAuto ? '(auto)' : '(manual)'} — Fórmula: (${panels}×${wpp}=${wattsDC})×${epc.toFixed(3)} + ${money(adders)}`;
+      // UI
+      $('systemPrice').textContent = money(systemPrice);
+      $('wattsKpi').textContent = wattsDC.toLocaleString('en-US') + ' W';
+      $('kwKpi').textContent = kwDC.toFixed(2) + ' kW-DC';
+      $('grossCommission').textContent = money(grossCommission);
+      $('feeNet').textContent = money(crmFee) + ' • ' + money(netCommission);
 
-      const text =
-`ADVENCY • RESUMEN
-Paneles: ${panels}
-Watts/panel: ${wpp}W
-Watts DC: ${wattsDC.toLocaleString()}W  |  kW-DC: ${kwdc.toFixed(2)}
-EPC: ${epc.toFixed(3)} ${epcMode==='auto' && epcAuto ? '(auto)' : '(manual)'}
-Adders: ${money(adders)}
+      const batteryCount = row.bat;
+      $('batteryHint').textContent = `Baterías Tesla 3: ${batteryCount} (${epcMode==='manual' ? 'manual' : 'auto'})`;
 
-Precio sistema: ${money(price)}
-% Comisión: ${(commPct*100).toFixed(2)}%  → Comisión: ${money(gross)}
-Fee CRM: ${(feePct*100).toFixed(2)}%  → Fee: ${money(fee)}
-Neto: ${money(net)}`;
+      const epcText = epcMode==='manual' ? `${num(epc,3)} (manual)` : `${num(epc,3)} (auto)`;
+      $('formulaLine').textContent =
+        `EPC aplicado: ${epcText} — Fórmula: (${panels}×${wattsPerPanel}=${wattsDC})×${num(epc,3)} + ${money(adders)}`;
+    }
 
-      $('summary').textContent = text;
-      return text;
+    function summaryText(){
+      const panels = parseInt($('panels').value || '0', 10) || 0;
+      const wattsPerPanel = parseInt($('wattsPerPanel').value || '0', 10) || 0;
+      const adders = parseFloat($('adders').value || '0') || 0;
+      const commissionPct = parseFloat($('commissionPct').value || '0') || 0;
+      const crmFeePct = parseFloat($('crmFeePct').value || '0') || 0;
+
+      const row = getTableRow(panels);
+      const epcMode = $('epcMode').value;
+      const epc = epcMode === 'manual' ? (parseFloat($('epcManual').value || '0') || 0) : row.epc;
+
+      const wattsDC = panels * wattsPerPanel;
+      const kwDC = wattsDC / 1000;
+
+      const systemPrice = (wattsDC * epc) + adders;
+      const grossCommission = systemPrice * (commissionPct/100);
+      const crmFee = grossCommission * (crmFeePct/100);
+      const netCommission = grossCommission - crmFee;
+
+      return [
+        `ADVENCY • RESUMEN`,
+        `Paneles: ${panels}`,
+        `Watts/panel: ${wattsPerPanel}W`,
+        `Watts DC: ${wattsDC.toLocaleString('en-US')}W   |   kW-DC: ${kwDC.toFixed(2)}`,
+        `EPC: ${epcMode==='manual' ? epc.toFixed(3)+' (manual)' : row.epc.toFixed(3)+' (auto)'}`,
+        `Baterías Tesla 3: ${row.bat}`,
+        `Adders: ${money(adders)}`,
+        `Precio sistema: ${money(systemPrice)}`,
+        `Comisión (${commissionPct}%): ${money(grossCommission)}`,
+        `Fee CRM (${crmFeePct}%): ${money(crmFee)}`,
+        `Neto: ${money(netCommission)}`
+      ].join('\n');
     }
 
     async function copySummary(){
-      const text = calc();
+      const text = summaryText();
       try{
         await navigator.clipboard.writeText(text);
-        $('copyBtn').textContent = '✅ Copiado';
-        setTimeout(()=> $('copyBtn').textContent='Copiar', 1200);
+        showToast('Copiado ✅');
       }catch(e){
-        alert('No pude copiar automáticamente. Copia manualmente el resumen.');
+        // fallback
+        prompt('Copia el resumen:', text);
       }
     }
 
     async function shareSummary(){
-      const text = calc();
-      // iPhone/iPad: abre el share sheet (WhatsApp incluido)
-      if (navigator.share){
-        try{ await navigator.share({ title:'Advency • Resumen Solar', text }); }
-        catch(e){ /* cancelado */ }
-      } else {
-        // fallback: abre WhatsApp con el texto
-        window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+      const text = summaryText();
+      try{
+        if(navigator.share){
+          await navigator.share({ title:'Advency • Resumen', text });
+        }else{
+          await navigator.clipboard.writeText(text);
+          showToast('Copiado para compartir ✅');
+        }
+      }catch(e){
+        // si cancelan share, no pasa nada
       }
     }
 
-    // events
-    ['panels','wpp','epcMode','epcManual','adders','commPct','feePct']
-      .forEach(id=>{
-        $(id).addEventListener('input', calc);
-        $(id).addEventListener('change', calc);
-      });
+    let toastTimer=null;
+    function showToast(msg){
+      const t = $('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>t.classList.remove('show'), 1400);
+    }
+
+    // Events
+    ['panels','wattsPerPanel','adders','commissionPct','crmFeePct','epcManual','epcMode']
+      .forEach(id => $(id).addEventListener('input', compute));
     $('copyBtn').addEventListener('click', copySummary);
     $('shareBtn').addEventListener('click', shareSummary);
 
-    calc();
+    // Init
+    compute();
   </script>
 </body>
 </html>

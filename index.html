@@ -3,62 +3,160 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Scroll Film 3D + Fotos</title>
+  <title>Scroll Film 3D — PRO</title>
+
+  <!-- Preload (evita parpadeos) -->
+  <link rel="preload" as="image" href="./casa.jpg">
+  <link rel="preload" as="image" href="./paneles.jpg">
+
   <style>
-    :root { --bg:#07090d; --fg:#e9eef7; --muted:#93a4bd; }
+    :root{
+      --bg:#07090d;
+      --fg:#e9eef7;
+      --muted:#93a4bd;
+    }
     *{box-sizing:border-box}
     html,body{height:100%; margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;}
     body{background:var(--bg); color:var(--fg); overflow-x:hidden;}
 
-    /* 3D pinned */
-    #stage{ position:fixed; inset:0; z-index:2; pointer-events:none; }
-    canvas{display:block; width:100%; height:100%}
-
-    /* Photo backdrops */
+    /* ===== Backdrops ===== */
     .backdrops{ position:fixed; inset:0; z-index:0; }
     .bg{
       position:absolute; inset:0;
       background-size:cover;
       background-position:center;
       opacity:0;
-      transform: scale(1.03);
-      transition: opacity 320ms linear, transform 900ms ease;
-      filter: saturate(1.05) contrast(1.06);
+      transform: scale(1.06);
+      transition: opacity 520ms ease, transform 1200ms ease;
+      filter: saturate(1.08) contrast(1.08);
+      will-change: opacity, transform;
     }
     .bg::after{
       content:"";
       position:absolute; inset:0;
+      /* Capa cinematográfica para legibilidad */
       background:
-        radial-gradient(60% 55% at 50% 45%, rgba(0,0,0,0) 35%, rgba(0,0,0,.68) 100%),
-        linear-gradient(to top, rgba(0,0,0,.78) 0%, rgba(0,0,0,.18) 55%, rgba(0,0,0,.62) 100%);
+        radial-gradient(65% 55% at 50% 42%, rgba(0,0,0,0) 30%, rgba(0,0,0,.72) 100%),
+        linear-gradient(to top, rgba(0,0,0,.82) 0%, rgba(0,0,0,.18) 58%, rgba(0,0,0,.64) 100%);
     }
     .bg.active{ opacity:1; transform: scale(1.00); }
 
-    /* Per-scene framing (para que se sienta “otra toma” aunque sea la misma foto) */
+    /* “Different framing” aunque sea la misma foto */
     #bg1{ background-position: 50% 65%; }
     #bg2{ background-position: 55% 45%; }
-    #bg3{ background-position: 45% 55%; filter: saturate(1.1) contrast(1.1) brightness(.95); }
-    #bg4{ background-position: 60% 40%; filter: saturate(1.05) contrast(1.12); }
+    #bg3{ background-position: 45% 55%; filter:saturate(1.10) contrast(1.12) brightness(.95); }
+    #bg4{ background-position: 60% 40%; filter:saturate(1.05) contrast(1.15); }
 
-    /* Content */
-    .wrap{ position:relative; z-index:3; }
-    section{ min-height:100vh; display:flex; align-items:flex-end; padding: clamp(18px, 4vw, 56px); }
-    .card{
-      width:min(720px, 92vw);
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(10,12,16,.55);
-      backdrop-filter: blur(10px);
-      padding: clamp(16px, 2.4vw, 28px);
+    /* ===== 3D stage ===== */
+    #stage{ position:fixed; inset:0; z-index:2; pointer-events:none; }
+    canvas{display:block; width:100%; height:100%}
+
+    /* ===== Cinematic UI layers ===== */
+    .letterbox{
+      position:fixed; inset:0; z-index:3; pointer-events:none;
     }
-    .kicker{letter-spacing:.14em; text-transform:uppercase; font-size:12px; color:var(--muted);}
-    h1{margin:.45rem 0 .6rem; font-size: clamp(28px, 5vw, 56px); line-height:1.03;}
-    p{margin:0; color:rgba(233,238,247,.84); font-size: clamp(14px, 2.2vw, 18px); line-height:1.5;}
+    .letterbox::before,.letterbox::after{
+      content:"";
+      position:absolute; left:0; right:0;
+      height: clamp(26px, 6vh, 80px);
+      background: rgba(0,0,0,.92);
+    }
+    .letterbox::before{ top:0; }
+    .letterbox::after{ bottom:0; }
+
+    .grain{
+      position:fixed; inset:0; z-index:4; pointer-events:none;
+      opacity:.14;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+      animation: grainMove 2.2s steps(2) infinite;
+    }
+    @keyframes grainMove{
+      0%{transform:translate3d(0,0,0)}
+      25%{transform:translate3d(-2%,1%,0)}
+      50%{transform:translate3d(1%,-2%,0)}
+      75%{transform:translate3d(2%,2%,0)}
+      100%{transform:translate3d(0,0,0)}
+    }
+
     .hint{
-      position:fixed; left:24px; bottom:18px; z-index:4;
-      color:rgba(233,238,247,.65); font-size:12px;
-      border:1px solid rgba(255,255,255,.10);
+      position:fixed; left:20px; bottom:20px; z-index:6;
+      color:rgba(233,238,247,.72); font-size:12px;
+      border:1px solid rgba(255,255,255,.12);
+      padding:10px 12px;
+      background:rgba(10,12,16,.45);
+      backdrop-filter: blur(10px);
+    }
+
+    /* ===== Content ===== */
+    .wrap{ position:relative; z-index:5; }
+    section{
+      min-height:100vh;
+      display:flex;
+      align-items:flex-end;
+      padding: clamp(18px, 4vw, 56px);
+    }
+
+    .card{
+      width:min(760px, 92vw);
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(10,12,16,.56);
+      backdrop-filter: blur(12px);
+      padding: clamp(16px, 2.4vw, 28px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.38);
+    }
+    .kicker{
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-size:12px;
+      color:var(--muted);
+    }
+    h1{
+      margin:.45rem 0 .6rem;
+      font-size: clamp(30px, 5.2vw, 60px);
+      line-height:1.02;
+    }
+    p{
+      margin:0;
+      color:rgba(233,238,247,.86);
+      font-size: clamp(14px, 2.2vw, 18px);
+      line-height:1.55;
+      max-width: 60ch;
+    }
+    .ctaRow{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 14px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.25);
+      color:rgba(233,238,247,.92);
+      text-decoration:none;
+      font-weight:600;
+      letter-spacing:.01em;
+    }
+    .btn:hover{ background:rgba(255,255,255,.06); }
+    .btnPrimary{
+      border-color: rgba(0,180,216,.55);
+      background: rgba(0,180,216,.12);
+    }
+
+    /* Debug (si falla alguna imagen lo verás) */
+    .debug{
+      position:fixed; right:16px; bottom:16px; z-index:7;
+      font-size:12px; color:rgba(233,238,247,.7);
+      border:1px solid rgba(255,255,255,.12);
       padding:10px 12px; background:rgba(10,12,16,.45);
       backdrop-filter: blur(10px);
+      display:none;
+      max-width:min(420px, 90vw);
+      white-space:pre-wrap;
     }
   </style>
 </head>
@@ -72,14 +170,19 @@
   </div>
 
   <div id="stage"></div>
-  <div class="hint">Scroll ↓ (fotos + shots 3D)</div>
+
+  <div class="letterbox"></div>
+  <div class="grain"></div>
+
+  <div class="hint">Scroll ↓ (cinema + 3D)</div>
+  <div class="debug" id="debug"></div>
 
   <div class="wrap">
     <section id="s1">
       <div class="card">
-        <div class="kicker">Scene 01 — Instalación real</div>
+        <div class="kicker">Scene 01 — Credibilidad</div>
         <h1>Puerto Rico real</h1>
-        <p>Abre con credibilidad: paneles reales, vibe local.</p>
+        <p>Instalación real y vibe local. Empieza con un “shot” amplio y fuerte.</p>
       </div>
     </section>
 
@@ -87,15 +190,15 @@
       <div class="card">
         <div class="kicker">Scene 02 — Lifestyle</div>
         <h1>El resultado</h1>
-        <p>Casa / estilo de vida. Aquí vendes la transformación.</p>
+        <p>Casa / estilo de vida. Aquí el mensaje es: estabilidad, ahorro y tranquilidad.</p>
       </div>
     </section>
 
     <section id="s3">
       <div class="card">
-        <div class="kicker">Scene 03 — Tech</div>
-        <h1>Energía fluyendo</h1>
-        <p>Transición abstracta: “energía inteligente”.</p>
+        <div class="kicker">Scene 03 — Tecnología</div>
+        <h1>Energía inteligente</h1>
+        <p>Transición técnica: luz, flujo y “upgrade” del hogar.</p>
       </div>
     </section>
 
@@ -103,7 +206,11 @@
       <div class="card">
         <div class="kicker">Scene 04 — Cierre</div>
         <h1>Agenda tu evaluación</h1>
-        <p>Shot limpio + CTA (WhatsApp / formulario).</p>
+        <p>Termina clean, directo al CTA. Sin distracciones.</p>
+        <div class="ctaRow">
+          <a class="btn btnPrimary" href="https://wa.me/17874005116" target="_blank" rel="noreferrer">WhatsApp 787-400-5116</a>
+          <a class="btn" href="#s1">Volver arriba</a>
+        </div>
       </div>
     </section>
   </div>
@@ -115,24 +222,44 @@
     import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js";
     gsap.registerPlugin(ScrollTrigger);
 
-    // ✅ TUS FOTOS (locales)
-    const CASA = "assets/casa.jpg";
-    const PANELES = "assets/paneles.jpg";
+    // ✅ RUTAS CORRECTAS (porque tus fotos están en la RAÍZ del repo)
+    const CASA = "./casa.jpg";
+    const PANELES = "./paneles.jpg";
 
-    // Scene mapping (4 escenas usando 2 fotos)
-    const IMG_1 = PANELES; // s1
-    const IMG_2 = CASA;    // s2
-    const IMG_3 = PANELES; // s3
-    const IMG_4 = CASA;    // s4
+    // 4 escenas usando 2 fotos
+    const IMG_1 = PANELES;
+    const IMG_2 = CASA;
+    const IMG_3 = PANELES;
+    const IMG_4 = CASA;
 
-    const bgs = [
+    // Debug helper
+    const dbg = document.getElementById("debug");
+    function showDebug(msg){
+      dbg.style.display = "block";
+      dbg.textContent = msg;
+    }
+
+    // Preload + apply backgrounds
+    const bgEls = [
       document.getElementById("bg1"),
       document.getElementById("bg2"),
       document.getElementById("bg3"),
       document.getElementById("bg4"),
     ];
-    [IMG_1, IMG_2, IMG_3, IMG_4].forEach((src, i) => {
-      bgs[i].style.backgroundImage = `url('${src}')`;
+
+    const imgs = [IMG_1, IMG_2, IMG_3, IMG_4];
+    await Promise.all(imgs.map((src)=> new Promise((res, rej)=>{
+      const im = new Image();
+      im.onload = () => res(true);
+      im.onerror = () => rej(new Error("No se pudo cargar: " + src));
+      im.src = src;
+    }))).catch(err=>{
+      showDebug("ERROR cargando imágenes.\n\n" + err.message +
+        "\n\nChecklist:\n- ¿Los archivos se llaman EXACTO casa.jpg y paneles.jpg?\n- ¿Están en la raíz del repo junto a index.html?\n- ¿GitHub Pages está activado (Settings > Pages)?" );
+    });
+
+    imgs.forEach((src, i) => {
+      bgEls[i].style.backgroundImage = `url('${src}')`;
     });
 
     // Switch background by section
@@ -146,58 +273,61 @@
       });
     });
     function setActive(i){
-      bgs.forEach((el, idx) => el.classList.toggle("active", idx === i));
+      bgEls.forEach((el, idx) => el.classList.toggle("active", idx === i));
     }
 
-    // 3D
+    // ===== Three.js cinematic stage =====
     const mount = document.getElementById("stage");
     const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     renderer.setSize(innerWidth, innerHeight);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
+    renderer.toneMappingExposure = 1.08;
     mount.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, innerWidth/innerHeight, 0.1, 200);
-    camera.position.set(0, 1.2, 6);
+    const camera = new THREE.PerspectiveCamera(38, innerWidth/innerHeight, 0.1, 200);
+    camera.position.set(0, 1.25, 6.2);
 
-    const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(4, 6, 3); scene.add(key);
+    // Lights (cinematic)
+    const key = new THREE.DirectionalLight(0xffffff, 2.4); key.position.set(4, 6, 3); scene.add(key);
     const fill = new THREE.DirectionalLight(0x88aaff, 0.9); fill.position.set(-5, 2, 2); scene.add(fill);
-    const rim = new THREE.DirectionalLight(0xffffff, 1.4); rim.position.set(-2, 4, -6); scene.add(rim);
-    scene.add(new THREE.AmbientLight(0x223344, 0.65));
+    const rim = new THREE.DirectionalLight(0xffffff, 1.55); rim.position.set(-2, 4, -6); scene.add(rim);
+    scene.add(new THREE.AmbientLight(0x223344, 0.62));
 
+    // Floor
     const floor = new THREE.Mesh(
       new THREE.PlaneGeometry(50, 50),
-      new THREE.MeshStandardMaterial({ color: 0x0b0f18, roughness: 0.35, metalness: 0.05 })
+      new THREE.MeshStandardMaterial({ color: 0x0b0f18, roughness: 0.32, metalness: 0.08 })
     );
     floor.rotation.x = -Math.PI/2;
-    floor.position.y = -0.9;
+    floor.position.y = -0.95;
     scene.add(floor);
 
-    // Placeholder “product” (luego lo cambiamos por un modelo GLB)
+    // “Product placeholder” (luego cambiamos a GLB real)
     const group = new THREE.Group(); scene.add(group);
 
     const body = new THREE.Mesh(
       new THREE.BoxGeometry(2.8, 0.7, 1.2),
-      new THREE.MeshStandardMaterial({ color: 0x4aa3ff, metalness: 0.6, roughness: 0.2 })
+      new THREE.MeshStandardMaterial({ color: 0x4aa3ff, metalness: 0.72, roughness: 0.18 })
     );
     body.position.y = -0.1;
 
     const cabin = new THREE.Mesh(
       new THREE.BoxGeometry(1.4, 0.55, 1.05),
-      new THREE.MeshStandardMaterial({ color: 0x111319, metalness: 0.2, roughness: 0.15 })
+      new THREE.MeshStandardMaterial({ color: 0x111319, metalness: 0.25, roughness: 0.14 })
     );
     cabin.position.set(0.2, 0.35, 0);
 
-    const wheelGeo = new THREE.CylinderGeometry(0.28, 0.28, 0.22, 24);
-    const wheelMat = new THREE.MeshStandardMaterial({ color:0x0a0a0a, metalness:0.2, roughness:0.6 });
+    const wheelGeo = new THREE.CylinderGeometry(0.28, 0.28, 0.22, 26);
+    const wheelMat = new THREE.MeshStandardMaterial({ color:0x0a0a0a, metalness:0.2, roughness:0.62 });
     const wheel = (x,z) => {
       const w = new THREE.Mesh(wheelGeo, wheelMat);
       w.rotation.z = Math.PI/2;
-      w.position.set(x, -0.45, z);
+      w.position.set(x, -0.48, z);
       return w;
     };
+
     group.add(body, cabin, wheel(-1.05, 0.55), wheel(1.05, 0.55), wheel(-1.05, -0.55), wheel(1.05, -0.55));
     scene.fog = new THREE.FogExp2(0x07090d, 0.085);
 
@@ -210,6 +340,7 @@
     const clock = new THREE.Clock();
     function tick(){
       const t = clock.getElapsedTime();
+      // micro-motion
       group.rotation.y += 0.002;
       group.position.y = Math.sin(t*0.9)*0.02;
       renderer.render(scene, camera);
@@ -217,28 +348,33 @@
     }
     tick();
 
-    // Cinematic shots
+    // Cinematic shots (scroll)
     const shots = gsap.timeline({
       scrollTrigger:{ trigger: ".wrap", start:"top top", end:"bottom bottom", scrub:1 }
     });
 
-    shots.to(camera.position, { x:0,   y:1.2, z:6,   duration:1 }, 0)
-         .to(group.rotation,  { y:0.6,        duration:1 }, 0)
+    shots
+      // Scene 1: hero
+      .to(camera.position, { x:0,   y:1.25, z:6.2, duration:1 }, 0)
+      .to(group.rotation,  { y:0.6,          duration:1 }, 0)
 
-         .to(camera.position, { x:1.3, y:0.9, z:2.9, duration:1 }, 1)
-         .to(group.rotation,  { y:1.5,        duration:1 }, 1)
+      // Scene 2: close
+      .to(camera.position, { x:1.35,y:0.95, z:2.85,duration:1 }, 1)
+      .to(group.rotation,  { y:1.55,         duration:1 }, 1)
 
-         .to(camera.position, { x:-2.2,y:1.0, z:4.2, duration:1 }, 2)
-         .to(group.rotation,  { y:2.35,       duration:1 }, 2)
+      // Scene 3: side
+      .to(camera.position, { x:-2.25,y:1.05,z:4.25,duration:1 }, 2)
+      .to(group.rotation,  { y:2.35,         duration:1 }, 2)
 
-         .to(camera.position, { x:0.2, y:1.35,z:5.2, duration:1 }, 3)
-         .to(group.rotation,  { y:3.2,        duration:1 }, 3);
+      // Scene 4: clean CTA
+      .to(camera.position, { x:0.25,y:1.42,z:5.4, duration:1 }, 3)
+      .to(group.rotation,  { y:3.25,         duration:1 }, 3);
 
-    // Caption fade
+    // Caption fades
     document.querySelectorAll("section .card").forEach((el) => {
       gsap.fromTo(el, { autoAlpha:0, y:22 }, {
         autoAlpha:1, y:0,
-        scrollTrigger:{ trigger: el.parentElement, start:"top 70%", end:"top 35%", scrub:true }
+        scrollTrigger:{ trigger: el.parentElement, start:"top 72%", end:"top 35%", scrub:true }
       });
     });
   </script>

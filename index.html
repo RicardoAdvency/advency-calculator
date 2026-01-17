@@ -3,380 +3,832 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Scroll Film 3D — PRO</title>
+  <title>Solar — Evaluación Gratis | Puerto Rico</title>
 
-  <!-- Preload (evita parpadeos) -->
+  <!-- Preload images (evita parpadeo) -->
   <link rel="preload" as="image" href="./casa.jpg">
   <link rel="preload" as="image" href="./paneles.jpg">
 
   <style>
     :root{
-      --bg:#07090d;
-      --fg:#e9eef7;
-      --muted:#93a4bd;
+      --bg:#ffffff;
+      --ink:#0b1220;
+      --muted:#4b5565;
+      --line:#e7e9ee;
+      --soft:#f6f7fb;
+      --accent:#00B4D8;
+      --accent2:#0A1F44;
+      --shadow: 0 18px 60px rgba(10,31,68,.10);
+      --shadow2: 0 10px 30px rgba(10,31,68,.10);
+      --radius: 18px;
     }
     *{box-sizing:border-box}
-    html,body{height:100%; margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;}
-    body{background:var(--bg); color:var(--fg); overflow-x:hidden;}
-
-    /* ===== Backdrops ===== */
-    .backdrops{ position:fixed; inset:0; z-index:0; }
-    .bg{
-      position:absolute; inset:0;
-      background-size:cover;
-      background-position:center;
-      opacity:0;
-      transform: scale(1.06);
-      transition: opacity 520ms ease, transform 1200ms ease;
-      filter: saturate(1.08) contrast(1.08);
-      will-change: opacity, transform;
-    }
-    .bg::after{
-      content:"";
-      position:absolute; inset:0;
-      /* Capa cinematográfica para legibilidad */
-      background:
-        radial-gradient(65% 55% at 50% 42%, rgba(0,0,0,0) 30%, rgba(0,0,0,.72) 100%),
-        linear-gradient(to top, rgba(0,0,0,.82) 0%, rgba(0,0,0,.18) 58%, rgba(0,0,0,.64) 100%);
-    }
-    .bg.active{ opacity:1; transform: scale(1.00); }
-
-    /* “Different framing” aunque sea la misma foto */
-    #bg1{ background-position: 50% 65%; }
-    #bg2{ background-position: 55% 45%; }
-    #bg3{ background-position: 45% 55%; filter:saturate(1.10) contrast(1.12) brightness(.95); }
-    #bg4{ background-position: 60% 40%; filter:saturate(1.05) contrast(1.15); }
-
-    /* ===== 3D stage ===== */
-    #stage{ position:fixed; inset:0; z-index:2; pointer-events:none; }
-    canvas{display:block; width:100%; height:100%}
-
-    /* ===== Cinematic UI layers ===== */
-    .letterbox{
-      position:fixed; inset:0; z-index:3; pointer-events:none;
-    }
-    .letterbox::before,.letterbox::after{
-      content:"";
-      position:absolute; left:0; right:0;
-      height: clamp(26px, 6vh, 80px);
-      background: rgba(0,0,0,.92);
-    }
-    .letterbox::before{ top:0; }
-    .letterbox::after{ bottom:0; }
-
-    .grain{
-      position:fixed; inset:0; z-index:4; pointer-events:none;
-      opacity:.14;
-      mix-blend-mode: overlay;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
-      animation: grainMove 2.2s steps(2) infinite;
-    }
-    @keyframes grainMove{
-      0%{transform:translate3d(0,0,0)}
-      25%{transform:translate3d(-2%,1%,0)}
-      50%{transform:translate3d(1%,-2%,0)}
-      75%{transform:translate3d(2%,2%,0)}
-      100%{transform:translate3d(0,0,0)}
-    }
-
-    .hint{
-      position:fixed; left:20px; bottom:20px; z-index:6;
-      color:rgba(233,238,247,.72); font-size:12px;
-      border:1px solid rgba(255,255,255,.12);
-      padding:10px 12px;
-      background:rgba(10,12,16,.45);
-      backdrop-filter: blur(10px);
-    }
-
-    /* ===== Content ===== */
-    .wrap{ position:relative; z-index:5; }
-    section{
-      min-height:100vh;
-      display:flex;
-      align-items:flex-end;
-      padding: clamp(18px, 4vw, 56px);
-    }
-
-    .card{
-      width:min(760px, 92vw);
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(10,12,16,.56);
-      backdrop-filter: blur(12px);
-      padding: clamp(16px, 2.4vw, 28px);
-      box-shadow: 0 18px 60px rgba(0,0,0,.38);
-    }
-    .kicker{
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      font-size:12px;
-      color:var(--muted);
-    }
-    h1{
-      margin:.45rem 0 .6rem;
-      font-size: clamp(30px, 5.2vw, 60px);
-      line-height:1.02;
-    }
-    p{
+    html,body{height:100%}
+    body{
       margin:0;
-      color:rgba(233,238,247,.86);
-      font-size: clamp(14px, 2.2vw, 18px);
-      line-height:1.55;
-      max-width: 60ch;
+      background:var(--bg);
+      color:var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      line-height:1.45;
+      overflow-x:hidden;
     }
-    .ctaRow{
-      margin-top:14px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
+    a{color:inherit}
+    .container{width:min(1100px, 92vw); margin:0 auto}
+    .topbar{
+      position:sticky; top:0; z-index:30;
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
     }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0;
+      gap:14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800; letter-spacing:.01em;
+    }
+    .dot{width:10px; height:10px; border-radius:999px; background:var(--accent)}
+    .navlinks{display:flex; gap:18px; color:var(--muted); font-weight:600; font-size:14px}
+    .navlinks a{ text-decoration:none }
+    .navlinks a:hover{ color:var(--ink) }
+
     .btn{
-      display:inline-flex;
-      align-items:center;
+      display:inline-flex; align-items:center; justify-content:center;
       gap:10px;
       padding:12px 14px;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(0,0,0,.25);
-      color:rgba(233,238,247,.92);
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius: 14px;
       text-decoration:none;
-      font-weight:600;
-      letter-spacing:.01em;
+      font-weight:700;
+      font-size:14px;
+      box-shadow: 0 6px 16px rgba(0,0,0,.05);
     }
-    .btn:hover{ background:rgba(255,255,255,.06); }
     .btnPrimary{
-      border-color: rgba(0,180,216,.55);
-      background: rgba(0,180,216,.12);
+      border-color: rgba(0,180,216,.35);
+      background: linear-gradient(180deg, rgba(0,180,216,.14), rgba(0,180,216,.06));
+      color: var(--accent2);
+    }
+    .btnPrimary:hover{ filter: saturate(1.1) }
+    .btnGhost{ box-shadow:none; background:transparent }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border:1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      color: var(--muted);
+      font-weight:700;
+      font-size:12px;
     }
 
-    /* Debug (si falla alguna imagen lo verás) */
-    .debug{
-      position:fixed; right:16px; bottom:16px; z-index:7;
-      font-size:12px; color:rgba(233,238,247,.7);
-      border:1px solid rgba(255,255,255,.12);
-      padding:10px 12px; background:rgba(10,12,16,.45);
-      backdrop-filter: blur(10px);
-      display:none;
-      max-width:min(420px, 90vw);
-      white-space:pre-wrap;
+    /* HERO */
+    .hero{
+      padding: 46px 0 22px;
+      background:
+        radial-gradient(900px 420px at 22% 10%, rgba(0,180,216,.10), transparent 60%),
+        radial-gradient(900px 420px at 80% 0%, rgba(10,31,68,.06), transparent 60%);
+      border-bottom:1px solid var(--line);
     }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 26px;
+      align-items: stretch;
+    }
+    .heroLeft{
+      padding: 18px 0 8px;
+    }
+    .kicker{
+      text-transform:uppercase;
+      letter-spacing:.18em;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+    }
+    h1{
+      margin:14px 0 12px;
+      font-size: clamp(34px, 4.5vw, 56px);
+      line-height:1.03;
+      letter-spacing:-.02em;
+    }
+    .lead{
+      margin:0;
+      color: var(--muted);
+      font-size: clamp(15px, 1.8vw, 18px);
+      max-width: 60ch;
+    }
+    .heroCTAs{ display:flex; gap:10px; flex-wrap:wrap; margin-top:18px }
+    .miniRow{ display:flex; flex-wrap:wrap; gap:10px; margin-top:18px }
+
+    .heroRight{
+      position:relative;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, #fff, var(--soft));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .heroRightInner{
+      height:100%;
+      padding:14px;
+      display:grid;
+      grid-template-rows: 1fr auto;
+      gap:12px;
+    }
+    #stage{
+      width:100%;
+      height: 420px;
+      border-radius: 14px;
+      background:
+        radial-gradient(600px 300px at 50% 10%, rgba(0,180,216,.16), transparent 55%),
+        radial-gradient(600px 300px at 30% 90%, rgba(10,31,68,.08), transparent 55%);
+      border:1px solid rgba(231,233,238,.9);
+      overflow:hidden;
+    }
+    .heroRightMeta{
+      display:flex; justify-content:space-between; gap:10px; align-items:center;
+      padding: 8px 4px 2px;
+      color:var(--muted);
+      font-weight:700;
+      font-size:12px;
+    }
+    .heroRightMeta span strong{ color:var(--ink) }
+
+    /* Sections */
+    section{ padding: 56px 0; }
+    .sectionTitle{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:14px;
+      margin-bottom: 18px;
+    }
+    .sectionTitle h2{
+      margin:0;
+      font-size: clamp(22px, 3vw, 34px);
+      letter-spacing:-.01em;
+      line-height:1.12;
+    }
+    .sectionTitle p{
+      margin:0;
+      color:var(--muted);
+      max-width: 56ch;
+      font-weight:600;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .card{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow2);
+    }
+    .card h3{ margin:10px 0 8px; font-size:16px; letter-spacing:-.01em }
+    .card p{ margin:0; color:var(--muted); font-weight:600; font-size:14px }
+    .icon{
+      width:42px; height:42px; border-radius:14px;
+      border:1px solid rgba(0,180,216,.30);
+      background: rgba(0,180,216,.08);
+      display:grid; place-items:center;
+      font-weight:900; color: var(--accent2);
+    }
+
+    /* Image split (cinematic but white) */
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items:stretch;
+    }
+    .frame{
+      border-radius: var(--radius);
+      border:1px solid var(--line);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      background:#fff;
+    }
+    .frame img{
+      width:100%; height:100%;
+      display:block;
+      object-fit: cover;
+      transform: scale(1.02);
+    }
+    .frameCaption{
+      padding: 14px 14px 16px;
+      border-top:1px solid var(--line);
+      background: linear-gradient(180deg, #fff, var(--soft));
+    }
+    .frameCaption .small{ color:var(--muted); font-weight:700; font-size:12px; letter-spacing:.10em; text-transform:uppercase }
+    .frameCaption .big{ margin:8px 0 0; font-weight:900; letter-spacing:-.01em; font-size:18px }
+    .frameCaption .text{ margin:8px 0 0; color:var(--muted); font-weight:600; font-size:14px }
+
+    /* Process */
+    .steps{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .step{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      background: #fff;
+      box-shadow: var(--shadow2);
+    }
+    .stepNum{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:30px; height:30px;
+      border-radius:999px;
+      border:1px solid rgba(10,31,68,.14);
+      background: rgba(10,31,68,.04);
+      font-weight:900;
+      margin-bottom:10px;
+    }
+    .step h4{ margin:0 0 6px; letter-spacing:-.01em }
+    .step p{ margin:0; color:var(--muted); font-weight:600; font-size:13px }
+
+    /* Form */
+    .formWrap{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, #fff, var(--soft));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .formGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .formSide{
+      padding: 18px;
+      border-right:1px solid var(--line);
+    }
+    .formSide h3{ margin:0 0 10px; letter-spacing:-.01em }
+    .formSide p{ margin:0; color:var(--muted); font-weight:600; font-size:14px }
+    .trust{
+      margin-top:14px;
+      display:grid; gap:10px;
+    }
+    .trust .item{
+      display:flex; gap:10px; align-items:flex-start;
+      padding: 12px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius: 14px;
+    }
+    .trust .item b{ display:block; margin-bottom:2px; }
+    .trust .item span{ color:var(--muted); font-weight:600; font-size:13px }
+    .formMain{
+      padding: 18px;
+    }
+    .fields{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .field{ display:flex; flex-direction:column; gap:6px; }
+    label{ font-weight:800; font-size:12px; color:var(--muted); letter-spacing:.10em; text-transform:uppercase }
+    input, select, textarea{
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 12px;
+      font: inherit;
+      background:#fff;
+      outline:none;
+    }
+    input:focus, select:focus, textarea:focus{ border-color: rgba(0,180,216,.55); box-shadow: 0 0 0 4px rgba(0,180,216,.10) }
+    textarea{ grid-column: 1 / -1; min-height: 92px; resize:vertical }
+    .formActions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px }
+    .fineprint{ margin-top:10px; color:var(--muted); font-weight:600; font-size:12px }
+
+    /* FAQ */
+    .faq{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      overflow:hidden;
+      background:#fff;
+      box-shadow: var(--shadow2);
+    }
+    details{ border-top:1px solid var(--line); padding: 14px 16px }
+    details:first-child{ border-top:none }
+    summary{
+      cursor:pointer;
+      font-weight:900;
+      letter-spacing:-.01em;
+      list-style:none;
+    }
+    summary::-webkit-details-marker{ display:none }
+    details p{ margin:10px 0 0; color:var(--muted); font-weight:600 }
+
+    /* Footer */
+    footer{
+      border-top:1px solid var(--line);
+      padding: 22px 0;
+      color:var(--muted);
+      font-weight:600;
+      font-size:13px;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .heroGrid{ grid-template-columns: 1fr; }
+      #stage{ height: 360px; }
+      .cards{ grid-template-columns: 1fr; }
+      .split{ grid-template-columns: 1fr; }
+      .steps{ grid-template-columns: 1fr 1fr; }
+      .formGrid{ grid-template-columns: 1fr; }
+      .formSide{ border-right:none; border-bottom:1px solid var(--line); }
+      .fields{ grid-template-columns: 1fr; }
+    }
+
+    /* Reveal animations initial state */
+    .reveal{ opacity:0; transform: translateY(18px); }
   </style>
 </head>
 
 <body>
-  <div class="backdrops">
-    <div class="bg active" id="bg1"></div>
-    <div class="bg" id="bg2"></div>
-    <div class="bg" id="bg3"></div>
-    <div class="bg" id="bg4"></div>
+  <div class="topbar">
+    <div class="container">
+      <div class="nav">
+        <div class="brand">
+          <span class="dot"></span>
+          <span>Solar · Evaluación</span>
+          <span style="color:var(--muted); font-weight:800;">PR</span>
+        </div>
+
+        <div class="navlinks">
+          <a href="#como">Cómo funciona</a>
+          <a href="#proceso">Proceso</a>
+          <a href="#faq">FAQ</a>
+          <a href="#cotiza">Cotiza</a>
+        </div>
+
+        <a class="btn btnPrimary" href="https://wa.me/17874005116" target="_blank" rel="noreferrer">
+          WhatsApp 787-400-5116
+        </a>
+      </div>
+    </div>
   </div>
 
-  <div id="stage"></div>
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container">
+      <div class="heroGrid">
+        <div class="heroLeft">
+          <div class="kicker reveal">EVALUACIÓN GRATIS · PUERTO RICO</div>
+          <h1 class="reveal">Energía solar, explicada <br>clara y sin presión.</h1>
+          <p class="lead reveal">
+            Te educamos en 5 minutos: cómo funciona, cuánto puedes ahorrar y qué necesitas para que el sistema tenga sentido para ti.
+            Si aplica, coordinamos evaluación y cotización.
+          </p>
 
-  <div class="letterbox"></div>
-  <div class="grain"></div>
+          <div class="heroCTAs reveal">
+            <a class="btn btnPrimary" href="#cotiza">Cotizar con mi factura</a>
+            <a class="btn btnGhost" href="#como">Ver cómo funciona</a>
+          </div>
 
-  <div class="hint">Scroll ↓ (cinema + 3D)</div>
-  <div class="debug" id="debug"></div>
+          <div class="miniRow reveal">
+            <span class="badge">✅ Sin compromiso</span>
+            <span class="badge">📍 Puerto Rico</span>
+            <span class="badge">⚡ Ahorro estimado</span>
+            <span class="badge">🧾 Factura LUMA</span>
+          </div>
+        </div>
 
-  <div class="wrap">
-    <section id="s1">
-      <div class="card">
-        <div class="kicker">Scene 01 — Credibilidad</div>
-        <h1>Puerto Rico real</h1>
-        <p>Instalación real y vibe local. Empieza con un “shot” amplio y fuerte.</p>
-      </div>
-    </section>
-
-    <section id="s2">
-      <div class="card">
-        <div class="kicker">Scene 02 — Lifestyle</div>
-        <h1>El resultado</h1>
-        <p>Casa / estilo de vida. Aquí el mensaje es: estabilidad, ahorro y tranquilidad.</p>
-      </div>
-    </section>
-
-    <section id="s3">
-      <div class="card">
-        <div class="kicker">Scene 03 — Tecnología</div>
-        <h1>Energía inteligente</h1>
-        <p>Transición técnica: luz, flujo y “upgrade” del hogar.</p>
-      </div>
-    </section>
-
-    <section id="s4">
-      <div class="card">
-        <div class="kicker">Scene 04 — Cierre</div>
-        <h1>Agenda tu evaluación</h1>
-        <p>Termina clean, directo al CTA. Sin distracciones.</p>
-        <div class="ctaRow">
-          <a class="btn btnPrimary" href="https://wa.me/17874005116" target="_blank" rel="noreferrer">WhatsApp 787-400-5116</a>
-          <a class="btn" href="#s1">Volver arriba</a>
+        <div class="heroRight reveal">
+          <div class="heroRightInner">
+            <div id="stage" aria-label="3D panel"></div>
+            <div class="heroRightMeta">
+              <span><strong>3D</strong> diseño limpio</span>
+              <span><strong>Cine</strong> al scroll</span>
+              <span><strong>Minimal</strong> fondo blanco</span>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
-  </div>
+    </div>
+  </header>
 
+  <!-- COMO FUNCIONA -->
+  <section id="como">
+    <div class="container">
+      <div class="sectionTitle">
+        <div>
+          <h2 class="reveal">Cómo funciona (sin cuentos)</h2>
+          <p class="reveal">Lo esencial para que entiendas solar y tomes una decisión con data, no con hype.</p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card reveal">
+          <div class="icon">01</div>
+          <h3>La meta</h3>
+          <p>Reemplazar parte (o toda) tu compra de energía a LUMA por tu propia producción.</p>
+        </div>
+        <div class="card reveal">
+          <div class="icon">02</div>
+          <h3>La pieza clave</h3>
+          <p>Tu factura: consumo (kWh), patrón de uso y costo. Sin eso, nadie puede estimar bien.</p>
+        </div>
+        <div class="card reveal">
+          <div class="icon">03</div>
+          <h3>Qué determina el ahorro</h3>
+          <p>Consumo, condiciones del techo, orientación/sombra y el diseño del sistema.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CINEMATIC SPLIT (tus fotos) -->
+  <section>
+    <div class="container">
+      <div class="split">
+        <div class="frame reveal">
+          <img src="./paneles.jpg" alt="Instalación solar en Puerto Rico" />
+          <div class="frameCaption">
+            <div class="small">CREDIBILIDAD</div>
+            <div class="big">Instalación real (PR)</div>
+            <div class="text">Así se ve la base: paneles + diseño correcto + evaluación de techo.</div>
+          </div>
+        </div>
+
+        <div class="frame reveal">
+          <img src="./casa.jpg" alt="Casa moderna frente al mar" />
+          <div class="frameCaption">
+            <div class="small">RESULTADO</div>
+            <div class="big">Energía + tranquilidad</div>
+            <div class="text">La compra inteligente es la que te da estabilidad y control sobre tu energía.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESO -->
+  <section id="proceso" style="background:var(--soft); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+    <div class="container">
+      <div class="sectionTitle">
+        <div>
+          <h2 class="reveal">Proceso (simple y rápido)</h2>
+          <p class="reveal">Te guiamos paso a paso. Sin presión, con claridad.</p>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step reveal">
+          <div class="stepNum">1</div>
+          <h4>Factura</h4>
+          <p>Nos compartes tu consumo (foto o números).</p>
+        </div>
+        <div class="step reveal">
+          <div class="stepNum">2</div>
+          <h4>Pre-evaluación</h4>
+          <p>Confirmamos si tu caso hace sentido (techo/sombra/uso).</p>
+        </div>
+        <div class="step reveal">
+          <div class="stepNum">3</div>
+          <h4>Diseño</h4>
+          <p>Propuesta con estimados y explicación de tu escenario.</p>
+        </div>
+        <div class="step reveal">
+          <div class="stepNum">4</div>
+          <h4>Instalación</h4>
+          <p>Coordinación, permisos y puesta en marcha.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COTIZA -->
+  <section id="cotiza">
+    <div class="container">
+      <div class="sectionTitle">
+        <div>
+          <h2 class="reveal">Cotiza con tu factura (y sal educado 😅)</h2>
+          <p class="reveal">Completa esto y te enviamos orientación + próximos pasos por WhatsApp.</p>
+        </div>
+      </div>
+
+      <div class="formWrap reveal">
+        <div class="formGrid">
+          <div class="formSide">
+            <h3>Qué vas a recibir</h3>
+            <p>Una respuesta clara: si solar te conviene, cuánto podrías ahorrar (estimado) y qué necesitas para avanzar.</p>
+
+            <div class="trust">
+              <div class="item">
+                <div class="icon" style="width:38px;height:38px;border-radius:14px">⚡</div>
+                <div>
+                  <b>Explicación simple</b>
+                  <span>Sin términos raros. Te lo traduzco a “vida real”.</span>
+                </div>
+              </div>
+              <div class="item">
+                <div class="icon" style="width:38px;height:38px;border-radius:14px">🧾</div>
+                <div>
+                  <b>Basado en tu factura</b>
+                  <span>Para estimar bien, sin inventar números.</span>
+                </div>
+              </div>
+              <div class="item">
+                <div class="icon" style="width:38px;height:38px;border-radius:14px">🕒</div>
+                <div>
+                  <b>Respuesta rápida</b>
+                  <span>Te contactamos por WhatsApp con el resumen.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="formMain">
+            <form id="leadForm">
+              <div class="fields">
+                <div class="field">
+                  <label>Nombre</label>
+                  <input name="nombre" placeholder="Tu nombre" required />
+                </div>
+
+                <div class="field">
+                  <label>Teléfono</label>
+                  <input name="telefono" placeholder="787-000-0000" required />
+                </div>
+
+                <div class="field">
+                  <label>Municipio</label>
+                  <input name="municipio" placeholder="Ej. Ponce / Caguas / Bayamón" required />
+                </div>
+
+                <div class="field">
+                  <label>Tipo de propiedad</label>
+                  <select name="propiedad" required>
+                    <option value="">Selecciona…</option>
+                    <option>Casa</option>
+                    <option>Apartamento</option>
+                    <option>Negocio</option>
+                    <option>Otra</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label>Pago mensual a LUMA</label>
+                  <input name="pago" placeholder="Ej. $180" />
+                </div>
+
+                <div class="field">
+                  <label>Promedio kWh (si lo sabes)</label>
+                  <input name="kwh" placeholder="Ej. 650 kWh" />
+                </div>
+
+                <textarea name="nota" placeholder="Si quieres: ¿tienes generador? ¿quieres batería? ¿hay sombra en el techo?"></textarea>
+              </div>
+
+              <div class="formActions">
+                <button class="btn btnPrimary" type="submit">Enviar por WhatsApp</button>
+                <a class="btn" href="https://wa.me/17874005116" target="_blank" rel="noreferrer">Escribir directo</a>
+              </div>
+
+              <div class="fineprint">
+                Al enviar, se abre WhatsApp con tu información pre-llenada. No guardamos data en servidores (esto es HTML).
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" style="background:var(--soft); border-top:1px solid var(--line);">
+    <div class="container">
+      <div class="sectionTitle">
+        <div>
+          <h2 class="reveal">Preguntas frecuentes</h2>
+          <p class="reveal">Las dudas típicas antes de tomar una decisión inteligente.</p>
+        </div>
+      </div>
+
+      <div class="faq reveal">
+        <details open>
+          <summary>¿Qué necesito para empezar?</summary>
+          <p>Tu factura (o el pago mensual aproximado), tu municipio y confirmar condiciones del techo (sombra/orientación).</p>
+        </details>
+        <details>
+          <summary>¿Por qué la factura es tan importante?</summary>
+          <p>Porque el consumo y el costo determinan el tamaño del sistema y si el ahorro hace sentido. Sin factura, es adivinar.</p>
+        </details>
+        <details>
+          <summary>¿Batería sí o no?</summary>
+          <p>Depende de tu prioridad: respaldo durante apagones vs. optimizar inversión. En evaluación te explico ambos escenarios.</p>
+        </details>
+        <details>
+          <summary>¿Cuánto tarda el proceso?</summary>
+          <p>Varía por permisos y coordinación, pero el paso 1 es rápido: evaluación + propuesta bien explicada.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+        <div>© <span id="y"></span> · Solar PR · Evaluación Educativa</div>
+        <div>WhatsApp: <a href="https://wa.me/17874005116" target="_blank" rel="noreferrer">787-400-5116</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GSAP (cinematic scroll) -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 
+  <!-- Three.js (3D minimal) -->
   <script type="module">
     import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js";
     gsap.registerPlugin(ScrollTrigger);
 
-    // ✅ RUTAS CORRECTAS (porque tus fotos están en la RAÍZ del repo)
-    const CASA = "./casa.jpg";
-    const PANELES = "./paneles.jpg";
+    // Year
+    document.getElementById("y").textContent = new Date().getFullYear();
 
-    // 4 escenas usando 2 fotos
-    const IMG_1 = PANELES;
-    const IMG_2 = CASA;
-    const IMG_3 = PANELES;
-    const IMG_4 = CASA;
+    // ===== WhatsApp Form =====
+    const form = document.getElementById("leadForm");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const nombre = data.get("nombre") || "";
+      const telefono = data.get("telefono") || "";
+      const municipio = data.get("municipio") || "";
+      const propiedad = data.get("propiedad") || "";
+      const pago = data.get("pago") || "";
+      const kwh = data.get("kwh") || "";
+      const nota = data.get("nota") || "";
 
-    // Debug helper
-    const dbg = document.getElementById("debug");
-    function showDebug(msg){
-      dbg.style.display = "block";
-      dbg.textContent = msg;
-    }
+      const msg =
+`Hola! Soy ${nombre}.
+Quiero una evaluación solar.
 
-    // Preload + apply backgrounds
-    const bgEls = [
-      document.getElementById("bg1"),
-      document.getElementById("bg2"),
-      document.getElementById("bg3"),
-      document.getElementById("bg4"),
-    ];
+📍 Municipio: ${municipio}
+🏠 Propiedad: ${propiedad}
+📱 Teléfono: ${telefono}
+🧾 Pago LUMA: ${pago}
+⚡ kWh (si aplica): ${kwh}
 
-    const imgs = [IMG_1, IMG_2, IMG_3, IMG_4];
-    await Promise.all(imgs.map((src)=> new Promise((res, rej)=>{
-      const im = new Image();
-      im.onload = () => res(true);
-      im.onerror = () => rej(new Error("No se pudo cargar: " + src));
-      im.src = src;
-    }))).catch(err=>{
-      showDebug("ERROR cargando imágenes.\n\n" + err.message +
-        "\n\nChecklist:\n- ¿Los archivos se llaman EXACTO casa.jpg y paneles.jpg?\n- ¿Están en la raíz del repo junto a index.html?\n- ¿GitHub Pages está activado (Settings > Pages)?" );
+Notas: ${nota}`.trim();
+
+      const url = "https://wa.me/17874005116?text=" + encodeURIComponent(msg);
+      window.open(url, "_blank", "noopener,noreferrer");
     });
 
-    imgs.forEach((src, i) => {
-      bgEls[i].style.backgroundImage = `url('${src}')`;
-    });
-
-    // Switch background by section
-    ["#s1", "#s2", "#s3", "#s4"].forEach((sel, i) => {
-      ScrollTrigger.create({
-        trigger: sel,
-        start: "top 55%",
-        end: "bottom 45%",
-        onEnter: () => setActive(i),
-        onEnterBack: () => setActive(i),
+    // ===== Cinematic reveals =====
+    gsap.utils.toArray(".reveal").forEach((el) => {
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 80%",
+        }
       });
     });
-    function setActive(i){
-      bgEls.forEach((el, idx) => el.classList.toggle("active", idx === i));
-    }
 
-    // ===== Three.js cinematic stage =====
+    // ===== 3D Stage =====
     const mount = document.getElementById("stage");
     const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-    renderer.setSize(innerWidth, innerHeight);
+    renderer.setSize(mount.clientWidth, mount.clientHeight);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.08;
     mount.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(38, innerWidth/innerHeight, 0.1, 200);
-    camera.position.set(0, 1.25, 6.2);
 
-    // Lights (cinematic)
-    const key = new THREE.DirectionalLight(0xffffff, 2.4); key.position.set(4, 6, 3); scene.add(key);
-    const fill = new THREE.DirectionalLight(0x88aaff, 0.9); fill.position.set(-5, 2, 2); scene.add(fill);
-    const rim = new THREE.DirectionalLight(0xffffff, 1.55); rim.position.set(-2, 4, -6); scene.add(rim);
-    scene.add(new THREE.AmbientLight(0x223344, 0.62));
+    const camera = new THREE.PerspectiveCamera(38, mount.clientWidth/mount.clientHeight, 0.1, 100);
+    camera.position.set(0.0, 1.0, 4.2);
 
-    // Floor
+    // Soft “studio” lights (cinema on white)
+    const key = new THREE.DirectionalLight(0xffffff, 2.0);
+    key.position.set(3, 5, 2);
+    scene.add(key);
+
+    const fill = new THREE.DirectionalLight(0x9bdcff, 0.8);
+    fill.position.set(-4, 2, 2);
+    scene.add(fill);
+
+    const rim = new THREE.DirectionalLight(0xffffff, 1.1);
+    rim.position.set(-2, 4, -4);
+    scene.add(rim);
+
+    scene.add(new THREE.AmbientLight(0x223344, 0.45));
+
+    // “Shadow catcher” (suave, en blanco)
     const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(50, 50),
-      new THREE.MeshStandardMaterial({ color: 0x0b0f18, roughness: 0.32, metalness: 0.08 })
+      new THREE.PlaneGeometry(20, 20),
+      new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9, metalness: 0.0 })
     );
     floor.rotation.x = -Math.PI/2;
-    floor.position.y = -0.95;
+    floor.position.y = -0.75;
     scene.add(floor);
 
-    // “Product placeholder” (luego cambiamos a GLB real)
-    const group = new THREE.Group(); scene.add(group);
+    // 3D Solar Panel (minimal) — se ve “producto”
+    const panelGroup = new THREE.Group();
+    scene.add(panelGroup);
 
-    const body = new THREE.Mesh(
-      new THREE.BoxGeometry(2.8, 0.7, 1.2),
-      new THREE.MeshStandardMaterial({ color: 0x4aa3ff, metalness: 0.72, roughness: 0.18 })
+    // Frame
+    const frame = new THREE.Mesh(
+      new THREE.BoxGeometry(2.4, 0.08, 1.3),
+      new THREE.MeshStandardMaterial({ color: 0x0A1F44, metalness: 0.4, roughness: 0.35 })
     );
-    body.position.y = -0.1;
+    frame.position.y = 0.0;
 
-    const cabin = new THREE.Mesh(
-      new THREE.BoxGeometry(1.4, 0.55, 1.05),
-      new THREE.MeshStandardMaterial({ color: 0x111319, metalness: 0.25, roughness: 0.14 })
+    // Cells surface
+    const cells = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.28, 1.18, 10, 5),
+      new THREE.MeshStandardMaterial({ color: 0x0b1a3a, metalness: 0.25, roughness: 0.15 })
     );
-    cabin.position.set(0.2, 0.35, 0);
+    cells.rotation.x = -Math.PI/2;
+    cells.position.y = 0.05;
 
-    const wheelGeo = new THREE.CylinderGeometry(0.28, 0.28, 0.22, 26);
-    const wheelMat = new THREE.MeshStandardMaterial({ color:0x0a0a0a, metalness:0.2, roughness:0.62 });
-    const wheel = (x,z) => {
-      const w = new THREE.Mesh(wheelGeo, wheelMat);
-      w.rotation.z = Math.PI/2;
-      w.position.set(x, -0.48, z);
-      return w;
-    };
+    // Glass highlight
+    const glass = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.28, 1.18),
+      new THREE.MeshPhysicalMaterial({
+        color: 0xffffff,
+        transmission: 0.65,
+        thickness: 0.2,
+        roughness: 0.08,
+        metalness: 0.0,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.12,
+        ior: 1.4
+      })
+    );
+    glass.rotation.x = -Math.PI/2;
+    glass.position.y = 0.055;
 
-    group.add(body, cabin, wheel(-1.05, 0.55), wheel(1.05, 0.55), wheel(-1.05, -0.55), wheel(1.05, -0.55));
-    scene.fog = new THREE.FogExp2(0x07090d, 0.085);
+    // Subtle grid lines (cinematic detail)
+    const grid = new THREE.GridHelper(2.25, 10, 0x0b2a55, 0x0b2a55);
+    grid.rotation.x = Math.PI/2;
+    grid.position.set(0, 0.058, 0);
+    grid.material.opacity = 0.18;
+    grid.material.transparent = true;
 
-    addEventListener("resize", () => {
-      camera.aspect = innerWidth/innerHeight;
+    panelGroup.add(frame, cells, glass, grid);
+    panelGroup.rotation.x = -0.55;
+    panelGroup.rotation.y = 0.35;
+    panelGroup.position.y = -0.05;
+
+    // Tiny “sun flare” sphere
+    const flare = new THREE.Mesh(
+      new THREE.SphereGeometry(0.06, 24, 24),
+      new THREE.MeshStandardMaterial({ color: 0x00B4D8, emissive: 0x00B4D8, emissiveIntensity: 0.6 })
+    );
+    flare.position.set(1.1, 0.55, 0.6);
+    scene.add(flare);
+
+    // Resize
+    function resize(){
+      const w = mount.clientWidth;
+      const h = mount.clientHeight;
+      renderer.setSize(w, h);
+      camera.aspect = w/h;
       camera.updateProjectionMatrix();
-      renderer.setSize(innerWidth, innerHeight);
-    });
+    }
+    window.addEventListener("resize", resize);
 
+    // Cinematic motion
     const clock = new THREE.Clock();
     function tick(){
       const t = clock.getElapsedTime();
-      // micro-motion
-      group.rotation.y += 0.002;
-      group.position.y = Math.sin(t*0.9)*0.02;
+      panelGroup.rotation.y = 0.35 + Math.sin(t*0.55)*0.18;
+      panelGroup.rotation.x = -0.55 + Math.cos(t*0.50)*0.06;
+      panelGroup.position.y = -0.05 + Math.sin(t*0.85)*0.05;
+      flare.position.y = 0.55 + Math.sin(t*1.2)*0.08;
+
       renderer.render(scene, camera);
       requestAnimationFrame(tick);
     }
     tick();
 
-    // Cinematic shots (scroll)
-    const shots = gsap.timeline({
-      scrollTrigger:{ trigger: ".wrap", start:"top top", end:"bottom bottom", scrub:1 }
+    // Scroll “camera shots” (cinematic)
+    const tl = gsap.timeline({
+      scrollTrigger:{
+        trigger: "body",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1
+      }
     });
 
-    shots
-      // Scene 1: hero
-      .to(camera.position, { x:0,   y:1.25, z:6.2, duration:1 }, 0)
-      .to(group.rotation,  { y:0.6,          duration:1 }, 0)
-
-      // Scene 2: close
-      .to(camera.position, { x:1.35,y:0.95, z:2.85,duration:1 }, 1)
-      .to(group.rotation,  { y:1.55,         duration:1 }, 1)
-
-      // Scene 3: side
-      .to(camera.position, { x:-2.25,y:1.05,z:4.25,duration:1 }, 2)
-      .to(group.rotation,  { y:2.35,         duration:1 }, 2)
-
-      // Scene 4: clean CTA
-      .to(camera.position, { x:0.25,y:1.42,z:5.4, duration:1 }, 3)
-      .to(group.rotation,  { y:3.25,         duration:1 }, 3);
-
-    // Caption fades
-    document.querySelectorAll("section .card").forEach((el) => {
-      gsap.fromTo(el, { autoAlpha:0, y:22 }, {
-        autoAlpha:1, y:0,
-        scrollTrigger:{ trigger: el.parentElement, start:"top 72%", end:"top 35%", scrub:true }
-      });
-    });
+    tl.to(camera.position, { x:0.4, y:1.1, z:3.6, duration:1 }, 0)
+      .to(panelGroup.rotation, { y:0.9, duration:1 }, 0.15)
+      .to(camera.position, { x:-0.3, y:0.95, z:4.6, duration:1 }, 0.55)
+      .to(panelGroup.rotation, { y:0.2, duration:1 }, 0.75);
   </script>
 </body>
 </html>

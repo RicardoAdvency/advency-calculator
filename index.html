@@ -3,381 +3,561 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ricardo Ortiz — Consultor Solar | Casos en Puerto Rico</title>
-  <meta name="description" content="Toca tu pueblo, mira casos reales y cotiza en 60 segundos con Ricardo Ortiz — Consultor Solar." />
+  <title>Ricardo Ortiz — Consultor Solar</title>
+  <meta name="description" content="Casos reales en Puerto Rico. Toca tu pueblo y cotiza en 60 segundos con Ricardo Ortiz — Consultor Solar." />
 
   <style>
     :root{
       --bg:#ffffff;
       --text:#0b1220;
-      --muted:#5b6b83;
-      --line:#e6ecf3;
+      --muted:#667085;
+      --line:#e9eef5;
 
-      --char:#0b1220;
-      --sun:#FFB703;
-      --sun2:#FB8500;
-      --green:#16a34a;
+      --accent:#111827;     /* negro elegante */
+      --solar:#f59e0b;      /* acento solar */
+      --solar2:#fb923c;
 
-      --shadow: 0 18px 50px rgba(11,18,32,.10);
-      --shadow2: 0 10px 28px rgba(11,18,32,.08);
-      --blur: saturate(140%) blur(10px);
+      --card:#ffffff;
+      --soft:#f7f9fc;
 
-      --r: 0px; /* sharp edges */
+      --shadow: 0 20px 60px rgba(15, 23, 42, .08);
+      --shadow2: 0 12px 30px rgba(15, 23, 42, .06);
+
+      --r: 18px;
+      --max: 1120px;
     }
 
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       background:var(--bg);
       color:var(--text);
-      letter-spacing:.1px;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:var(--max);margin:0 auto;padding:22px 18px 90px}
 
-    .wrap{max-width:1100px;margin:0 auto;padding:18px 18px 70px}
-    a{color:inherit}
-
-    /* Topbar */
-    .topbar{
-      display:flex;align-items:center;justify-content:space-between;gap:14px;
-      padding:10px 0 18px;
+    /* Nav */
+    .nav{
+      position:sticky; top:0; z-index:30;
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,.72);
+      border-bottom: 1px solid rgba(233,238,245,.8);
     }
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{
-      width:44px;height:44px;border:2px solid var(--char);
-      display:grid;place-items:center;font-weight:900;letter-spacing:.5px;
+    .navInner{
+      max-width:var(--max);
+      margin:0 auto;
+      padding: 14px 18px;
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
     }
-    .brand h1{margin:0;font-size:13px;font-weight:900;letter-spacing:.9px;text-transform:uppercase}
+    .brand{display:flex; align-items:center; gap:12px; min-width: 250px}
+    .mark{
+      width:40px;height:40px;border-radius: 999px;
+      background: linear-gradient(135deg,var(--solar) 0%, var(--solar2) 100%);
+      display:grid;place-items:center;
+      font-weight:900; color:#111;
+      box-shadow: 0 12px 24px rgba(245,158,11,.18);
+    }
+    .brand h1{
+      margin:0;
+      font-size:13px;
+      font-weight:900;
+      letter-spacing:.7px;
+      text-transform:uppercase;
+    }
     .brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
-    .top-actions{display:flex;gap:10px;flex-wrap:wrap}
-
-    /* Buttons */
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:10px;
-      padding:12px 14px;border:1px solid var(--char);
-      background:transparent;color:var(--char);
-      text-decoration:none;font-weight:900;letter-spacing:.3px;
-      cursor:pointer;user-select:none;border-radius:var(--r);
+    .links{
+      display:flex; gap:14px; align-items:center; flex-wrap:wrap;
+      color:var(--muted);
+      font-weight:700; font-size:13px;
     }
-    .btn.primary{background:var(--char);color:#fff;border-color:var(--char)}
-    .btn.sun{background:linear-gradient(135deg,var(--sun) 0%, var(--sun2) 100%);color:#111;border-color:transparent}
-    .btn.ghost{border-color:var(--line);background:#fff;color:var(--text)}
-    .btn:hover{transform:translateY(-1px)}
-    .btn:active{transform:translateY(0)}
+    .links a{padding:10px 10px;border-radius:999px}
+    .links a:hover{background:var(--soft); color:var(--text)}
+    .cta{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
 
-    /* HERO */
-    .hero{
-      position:relative;overflow:hidden;
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding: 12px 14px;
       border:1px solid var(--line);
-      box-shadow:var(--shadow);
-      min-height:560px;background:#0b1220;border-radius:var(--r);
+      border-radius: 999px;
+      background:#fff;
+      font-weight:800;
+      letter-spacing:.2px;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+      box-shadow: 0 1px 0 rgba(15,23,42,.02);
+    }
+    .btn:hover{transform: translateY(-1px); box-shadow: var(--shadow2)}
+    .btn:active{transform: translateY(0px)}
+    .btn.primary{
+      border-color: transparent;
+      background: linear-gradient(135deg,var(--solar) 0%, var(--solar2) 100%);
+      color:#111;
+    }
+    .btn.dark{
+      border-color: transparent;
+      background: var(--accent);
+      color:#fff;
+    }
+
+    /* Hero */
+    .hero{
+      margin-top: 16px;
+      border:1px solid var(--line);
+      border-radius: 26px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      background:#0b1220;
+      min-height: 640px;
+      position:relative;
     }
     .hero video{
-      position:absolute;inset:0;width:100%;height:100%;
-      object-fit:cover;transform:scale(1.02);
-      filter: contrast(1.05) saturate(1.05);
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      object-fit:cover;
+      transform: scale(1.02);
+      filter: contrast(1.04) saturate(1.02);
     }
     .hero::after{
-      content:"";position:absolute;inset:0;
+      content:"";
+      position:absolute; inset:0;
       background:
-        radial-gradient(900px 520px at 18% 25%, rgba(255,183,3,.22) 0%, rgba(255,183,3,0) 60%),
-        linear-gradient(90deg, rgba(11,18,32,.86) 0%, rgba(11,18,32,.60) 45%, rgba(11,18,32,.10) 100%);
+        radial-gradient(900px 520px at 18% 25%, rgba(245,158,11,.22) 0%, rgba(245,158,11,0) 60%),
+        linear-gradient(90deg, rgba(11,18,32,.88) 0%, rgba(11,18,32,.58) 44%, rgba(11,18,32,.12) 100%);
       pointer-events:none;
     }
-    .hero-inner{position:relative;z-index:2;padding:44px 26px;height:100%}
-    .hero-grid{
-      display:grid;grid-template-columns:1.25fr .75fr;gap:18px;align-items:end;
-      min-height:560px;
+    .heroInner{
+      position:relative;
+      z-index:2;
+      padding: 62px 46px;
+      min-height: 640px;
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 26px;
+      align-items:end;
     }
-    .kicker{
-      display:inline-flex;align-items:center;gap:10px;
-      padding:10px 12px;border:1px solid rgba(255,255,255,.22);
-      color:rgba(255,255,255,.92);
-      background:rgba(255,255,255,.06);
-      backdrop-filter:var(--blur);
-      font-weight:900;letter-spacing:.35px;border-radius:var(--r);
+    .chip{
+      display:inline-flex; align-items:center; gap:10px;
+      padding: 10px 12px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.92);
+      backdrop-filter: blur(10px);
+      border-radius: 999px;
+      font-weight:800;
+      width: fit-content;
     }
-    .kicker .dot{width:8px;height:8px;background:var(--sun)}
-    .hero h2{margin:14px 0 0;font-size:44px;line-height:1.03;color:#fff}
-    .hero p{margin:12px 0 0;color:rgba(255,255,255,.82);font-size:15px;max-width:640px;line-height:1.55}
-    .hero-cta{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
-    .note{margin-top:14px;font-size:12px;color:rgba(255,255,255,.74);line-height:1.5}
+    .chip .dot{width:8px;height:8px;border-radius:999px;background:var(--solar)}
+    .hero h2{
+      margin:14px 0 0;
+      color:#fff;
+      font-size: 54px;
+      line-height: 1.02;
+      letter-spacing: .2px;
+    }
+    .lead{
+      margin: 14px 0 0;
+      color: rgba(255,255,255,.84);
+      font-size: 15px;
+      line-height: 1.65;
+      max-width: 640px;
+    }
+    .heroActions{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top: 18px;
+    }
+    .heroNote{
+      margin-top: 12px;
+      color: rgba(255,255,255,.72);
+      font-size: 12px;
+      line-height: 1.55;
+    }
 
-    /* 3D layers (parallax) */
-    .layer{position:absolute;z-index:3;will-change:transform;transition:transform 120ms ease-out;pointer-events:none}
+    .side{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:flex-end;
+      justify-content:flex-end;
+      padding-bottom: 6px;
+    }
     .glass{
-      border:1px solid rgba(255,255,255,.22);
-      background:rgba(255,255,255,.08);
-      color:#fff;backdrop-filter:var(--blur);
-      box-shadow:var(--shadow2);
-      padding:14px 14px;border-radius:var(--r);
+      width: 340px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color:#fff;
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      padding: 14px 14px;
+      box-shadow: 0 14px 30px rgba(0,0,0,.14);
     }
-    .badge{
-      font-weight:900;letter-spacing:.35px;text-transform:uppercase;font-size:12px;
-      display:inline-flex;gap:10px;align-items:center;
-    }
-    .badge .bar{width:44px;height:2px;background:var(--sun)}
-    .mini{font-size:12px;color:rgba(255,255,255,.86);margin-top:6px;line-height:1.35}
-    .list{margin-top:10px;display:grid;gap:8px;font-size:12px;color:rgba(255,255,255,.92)}
-    .li{display:flex;gap:10px;align-items:flex-start}
-    .tick{width:10px;height:10px;background:var(--sun);margin-top:4px}
-    .pill{
-      display:inline-flex;align-items:center;gap:10px;
-      padding:10px 12px;border:1px solid rgba(255,255,255,.22);
-      background:rgba(255,255,255,.06);
-      color:#fff;font-weight:900;font-size:12px;
-      backdrop-filter:var(--blur);border-radius:var(--r);
-    }
-    .pill .spark{width:10px;height:10px;background:var(--green)}
-    .hero-right{display:flex;flex-direction:column;gap:12px;align-items:flex-end;justify-content:flex-end;padding-bottom:10px}
+    .glass strong{display:block;font-weight:900;letter-spacing:.2px}
+    .glass p{margin:8px 0 0;font-size:12px;color:rgba(255,255,255,.86);line-height:1.5}
+    .miniList{margin-top:10px;display:grid;gap:8px;font-size:12px;color:rgba(255,255,255,.92)}
+    .miniItem{display:flex;gap:10px;align-items:flex-start}
+    .tick{width:10px;height:10px;background:var(--solar);border-radius:3px;margin-top:4px}
 
     /* Sections */
-    .section{margin-top:22px}
-    .section-head{
-      display:flex;align-items:flex-end;justify-content:space-between;gap:14px;
-      border-top:1px solid var(--line);padding-top:18px;
+    .section{
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top:1px solid var(--line);
     }
-    .section h3{margin:0;font-size:18px;letter-spacing:.2px}
-    .sub{margin:6px 0 0;color:var(--muted);font-size:13px;max-width:760px;line-height:1.55}
+    .head{
+      display:flex; justify-content:space-between; align-items:flex-end; gap:14px;
+      flex-wrap:wrap;
+    }
+    .head h3{margin:0;font-size:18px;letter-spacing:.2px}
+    .sub{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+      max-width: 780px;
+    }
 
-    /* Map + case (NO photos) */
-    .grid2{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .panel{
-      border:1px solid var(--line);
-      box-shadow:var(--shadow2);
-      padding:14px;background:#fff;border-radius:var(--r);
+    /* Cards + grid */
+    .grid2{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
     }
-    .mapbox{min-height:420px;background:linear-gradient(180deg,#fff 0%, #fbfcff 100%);position:relative}
-    .map-title{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
-    .hint{font-size:12px;color:var(--muted)}
+    .card{
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      padding: 16px;
+      background: var(--card);
+      box-shadow: var(--shadow2);
+    }
+
+    /* Map */
+    .mapTitle{
+      display:flex;justify-content:space-between;align-items:center;gap:10px;
+      font-weight:900;
+    }
+    .hint{font-size:12px;color:var(--muted);font-weight:700}
     .island{
-      position:absolute;inset:56px 14px 14px 14px;
+      margin-top:12px;
+      height: 380px;
       border:1px solid var(--line);
-      background:#fff;overflow:hidden;
-    }
-    .island::before{
-      content:"";position:absolute;inset:0;
+      border-radius: 16px;
       background:
-        radial-gradient(600px 260px at 40% 40%, rgba(255,183,3,.10) 0%, rgba(255,183,3,0) 60%),
-        radial-gradient(520px 240px at 70% 70%, rgba(22,163,74,.08) 0%, rgba(22,163,74,0) 60%);
-      pointer-events:none;
+        radial-gradient(600px 260px at 40% 40%, rgba(245,158,11,.10) 0%, rgba(245,158,11,0) 60%),
+        radial-gradient(520px 240px at 70% 70%, rgba(16,185,129,.08) 0%, rgba(16,185,129,0) 60%),
+        #fff;
+      position:relative;
+      overflow:hidden;
     }
     .pin{
-      position:absolute;transform:translate(-50%,-50%);
+      position:absolute;
       width:18px;height:18px;
-      border:2px solid var(--char);
-      background:linear-gradient(135deg,var(--sun) 0%, var(--sun2) 100%);
-      cursor:pointer;box-shadow:0 8px 18px rgba(11,18,32,.16);
-      border-radius:var(--r);
+      border-radius:999px;
+      border: 2px solid #111;
+      background: linear-gradient(135deg,var(--solar) 0%, var(--solar2) 100%);
+      transform: translate(-50%,-50%);
+      cursor:pointer;
+      box-shadow: 0 14px 28px rgba(15,23,42,.16);
+      transition: transform .12s ease, box-shadow .12s ease;
     }
-    .pin.active{box-shadow:0 10px 24px rgba(11,18,32,.22)}
-    .pin-label{
-      position:absolute;transform:translate(-50%,-50%);
-      top: calc(var(--y) + 18px); left: var(--x);
-      font-size:11px;color:var(--char);
-      background:#fff;padding:6px 8px;border:1px solid var(--line);
-      box-shadow:0 10px 24px rgba(11,18,32,.08);
-      white-space:nowrap;border-radius:var(--r);
-      opacity:0;pointer-events:none;transition:opacity 120ms ease-out;
+    .pin:hover{transform: translate(-50%,-50%) scale(1.06)}
+    .pin.active{box-shadow: 0 18px 36px rgba(15,23,42,.22)}
+    .label{
+      position:absolute;
+      transform: translate(-50%,-50%);
+      top: calc(var(--y) + 18px);
+      left: var(--x);
+      font-size:11px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding: 6px 8px;
+      color: var(--text);
+      box-shadow: 0 14px 28px rgba(15,23,42,.08);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .12s ease;
+      white-space:nowrap;
     }
-    .pin:hover + .pin-label{opacity:1}
+    .pin:hover + .label{opacity:1}
 
-    .case-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-    .case-title{font-size:16px;font-weight:900;letter-spacing:.2px}
-    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-    .kpi{border:1px solid var(--line);padding:10px;border-radius:var(--r)}
-    .kpi .t{font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.35px}
+    /* Case */
+    .caseTop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .caseTitle{font-weight:900;font-size:16px}
+    .caseSub{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+    .kpi{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background:#fff;
+    }
+    .kpi .t{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.35px;
+      font-weight:900;
+    }
     .kpi .v{margin-top:6px;font-weight:900}
-    .bullets{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;display:grid;gap:8px;font-size:13px}
-    .bullets span{display:flex;gap:10px;align-items:flex-start}
-    .bullets i{width:10px;height:10px;background:var(--sun);margin-top:5px;flex:0 0 auto}
-
-    /* Social proof (text-only) */
-    .reviews{margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .rev{border:1px solid var(--line);padding:12px;box-shadow:var(--shadow2);border-radius:var(--r)}
-    .rev p{margin:0;font-size:13px;line-height:1.5;color:var(--text)}
-    .rev .who{margin-top:10px;font-size:12px;color:var(--muted);font-weight:900;letter-spacing:.25px;text-transform:uppercase}
-    .rev .stars{font-size:12px;color:#111;margin-top:8px;letter-spacing:2px}
-
-    /* Comparison table */
-    .table{margin-top:14px;overflow:auto}
-    table{width:100%;border-collapse:collapse;border:1px solid var(--line)}
-    th,td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top}
-    th{background:#fbfcff;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.35px;color:var(--muted)}
-    td{font-size:13px;line-height:1.55}
-    .good{font-weight:900}
-    .good::before{content:"● ";color:var(--green)}
-    .warn::before{content:"● ";color:var(--sun2)}
-
-    /* Form 2 steps */
-    .formgrid{margin-top:14px;display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
-    label{display:block;font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.35px}
-    input, select{
-      width:100%;padding:12px 12px;border:1px solid var(--line);
-      outline:none;font-size:14px;background:#fff;border-radius:var(--r);
+    .bullets{
+      margin-top:14px;
+      padding-top:12px;
+      border-top:1px solid var(--line);
+      display:grid;
+      gap:10px;
+      font-size:13px;
+      line-height:1.5;
     }
-    input:focus, select:focus{border-color:rgba(255,183,3,.65);box-shadow:0 0 0 3px rgba(255,183,3,.14)}
+    .b{display:flex;gap:10px;align-items:flex-start}
+    .b i{width:10px;height:10px;background:var(--solar);border-radius:3px;margin-top:5px;flex:0 0 auto}
+
+    /* Reviews */
+    .reviews{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 12px;
+    }
+    .rev{
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      padding: 14px;
+      background:#fff;
+      box-shadow: var(--shadow2);
+    }
+    .stars{letter-spacing:2px;color:#111;font-size:12px}
+    .rev p{margin:10px 0 0;font-size:13px;line-height:1.55}
+    .who{margin-top:12px;color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.3px}
+
+    /* Form */
+    .formGrid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 14px;
+    }
+    .step{
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      padding: 16px;
+      background:#fff;
+      box-shadow: var(--shadow2);
+    }
+    .stepHead{
+      display:flex;justify-content:space-between;align-items:center;gap:10px;
+      padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid var(--line);
+    }
+    .tag{
+      font-size:11px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      color:var(--muted);
+      font-weight:900;
+      letter-spacing:.25px;
+      background:#fff;
+    }
+    label{
+      display:block;
+      font-size:11px;
+      color:var(--muted);
+      font-weight:900;
+      letter-spacing:.35px;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+    input,select{
+      width:100%;
+      padding: 12px 12px;
+      border:1px solid var(--line);
+      border-radius: 16px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    input:focus,select:focus{
+      border-color: rgba(245,158,11,.55);
+      box-shadow: 0 0 0 4px rgba(245,158,11,.14);
+    }
     .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .stack{display:grid;gap:10px}
-    .step{border:1px solid var(--line);box-shadow:var(--shadow2);padding:14px;background:#fff;border-radius:var(--r)}
-    .stephead{display:flex;justify-content:space-between;gap:10px;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:12px}
-    .tag{font-size:11px;font-weight:900;padding:6px 8px;border:1px solid var(--line);background:#fff;color:#111;border-radius:var(--r)}
+    .stack{display:grid;gap:12px}
     .hidden{display:none !important}
-    .consent{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--muted);line-height:1.35}
-    .consent input{width:18px;height:18px;margin-top:1px}
-    .success{border:1px solid rgba(22,163,74,.25);background:rgba(22,163,74,.06);padding:14px;border-radius:var(--r)}
+    .consent{
+      display:flex;gap:10px;align-items:flex-start;
+      font-size:12px;color:var(--muted);line-height:1.35;
+    }
+    .consent input{width:18px;height:18px;margin-top:2px}
+
+    .success{
+      border:1px solid rgba(16,185,129,.25);
+      background: rgba(16,185,129,.06);
+      border-radius: var(--r);
+      padding: 14px;
+    }
     .success strong{display:block}
     .success p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
 
     .foot{
-      margin-top:22px;border-top:1px solid var(--line);padding-top:16px;
+      margin-top: 28px;
+      border-top:1px solid var(--line);
+      padding-top: 16px;
       display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
-      color:var(--muted);font-size:12px;
+      color:var(--muted);
+      font-size:12px;
     }
 
-    @media (max-width: 960px){
-      .hero-grid{grid-template-columns:1fr;min-height:580px}
-      .hero-right{align-items:flex-start}
+    /* Small screens */
+    @media (max-width: 980px){
+      .heroInner{grid-template-columns:1fr; padding: 50px 22px}
+      .hero h2{font-size:44px}
+      .side{align-items:flex-start}
+      .glass{width:100%}
       .grid2{grid-template-columns:1fr}
       .reviews{grid-template-columns:1fr}
-      .formgrid{grid-template-columns:1fr}
-      .hero h2{font-size:38px}
-      .mapbox{min-height:460px}
+      .formGrid{grid-template-columns:1fr}
+      .links{display:none}
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
 
-    <div class="topbar">
+  <!-- NAV -->
+  <div class="nav">
+    <div class="navInner">
       <div class="brand">
-        <div class="logo">RO</div>
+        <div class="mark">RO</div>
         <div>
           <h1>Ricardo Ortiz — Consultor Solar</h1>
-          <p>Casos en Puerto Rico • Evaluación rápida • Seguimiento por WhatsApp</p>
+          <p>Puerto Rico • Evaluación rápida • WhatsApp</p>
         </div>
       </div>
-      <div class="top-actions">
-        <a class="btn ghost" href="#casos">Ver casos</a>
-        <a class="btn sun" href="#cotiza">Cotiza en 60s</a>
+
+      <div class="links">
+        <a href="#casos">Casos</a>
+        <a href="#reviews">Comentarios</a>
+        <a href="#cotiza">Cotiza</a>
+      </div>
+
+      <div class="cta">
+        <a class="btn" href="#casos">Ver casos</a>
+        <a class="btn primary" href="#cotiza">Cotiza en 60s</a>
       </div>
     </div>
+  </div>
 
-    <!-- HERO (VIDEO ONLY) -->
+  <div class="wrap">
+
+    <!-- HERO -->
     <section class="hero" id="inicio">
-      <!-- Coloca tu video aquí: /assets/hero.mp4 -->
+      <!-- IMPORTANTE: hero.mp4 debe estar al lado de index.html -->
       <video autoplay muted loop playsinline preload="metadata">
-        <source src="assets/hero.mp4" type="video/mp4" />
+        <source src="./hero.mp4" type="video/mp4" />
       </video>
 
-      <!-- Parallax layers -->
-      <div class="layer glass" id="layerA" style="top:24px; right:24px; width: 300px;">
-        <div class="badge"><span class="bar"></span>Hecho para hogares con LUMA</div>
-        <div class="mini">Toca tu pueblo, mira un caso similar y recibe tu estimado en 60 segundos.</div>
-        <div class="list">
-          <div class="li"><div class="tick"></div><div>Evaluación honesta (sin presión)</div></div>
-          <div class="li"><div class="tick"></div><div>Opciones según tu consumo y techo</div></div>
-          <div class="li"><div class="tick"></div><div>Respuesta rápida por WhatsApp</div></div>
-        </div>
-      </div>
+      <div class="heroInner">
+        <div>
+          <div class="chip"><span class="dot"></span>Casos reales • Puerto Rico</div>
+          <h2>Resultados cerca de ti.<br/>Toca tu pueblo.</h2>
+          <p class="lead">
+            Selecciona tu pueblo para ver un caso destacado (rápido y claro) y completa una evaluación corta para tu estimado.
+          </p>
 
-      <div class="layer pill" id="layerB" style="top:110px; left:36px;">
-        <div class="spark"></div><div>Estabilidad + planificación</div>
-      </div>
-
-      <div class="layer glass" id="layerC" style="bottom:26px; right:24px; width: 310px;">
-        <div class="badge"><span class="bar"></span>Casos en Puerto Rico</div>
-        <div class="mini">Selecciona tu pueblo para ver un caso destacado y cotizar.</div>
-      </div>
-
-      <div class="hero-inner">
-        <div class="hero-grid">
-          <div>
-            <div class="kicker"><span class="dot"></span>Casos reales • Puerto Rico</div>
-            <h2>Mira resultados cerca de ti.<br/>Toca tu pueblo.</h2>
-            <p>
-              Esta página reúne casos y resultados típicos de hogares en Puerto Rico.
-              Selecciona tu pueblo, revisa el caso destacado y completa una evaluación rápida para tu estimado.
-            </p>
-            <div class="hero-cta">
-              <a class="btn sun" href="#casos">Ver casos por pueblo</a>
-              <a class="btn primary" href="#cotiza">Cotiza en 60 segundos</a>
-            </div>
-            <div class="note">
-              *Resultados varían según consumo, techo, orientación, sombras, equipos y diseño del sistema.
-            </div>
+          <div class="heroActions">
+            <a class="btn primary" href="#casos">Ver casos por pueblo</a>
+            <a class="btn dark" href="#cotiza">Cotiza en 60 segundos</a>
           </div>
 
-          <div class="hero-right">
-            <div class="pill"><div class="spark"></div><div>Seguimiento rápido</div></div>
-            <div class="pill"><div class="spark"></div><div>Guía clara y simple</div></div>
+          <div class="heroNote">
+            *Resultados varían según consumo, techo, sombras, equipos y diseño del sistema.
+          </div>
+        </div>
+
+        <div class="side">
+          <div class="glass">
+            <strong>Evaluación honesta</strong>
+            <p>Te explico lo que aplica para tu casa y tus objetivos — sin presión.</p>
+          </div>
+
+          <div class="glass">
+            <strong>Enfoque en estabilidad</strong>
+            <p>Si quieres backup, definimos cargas críticas y prioridades.</p>
+            <div class="miniList">
+              <div class="miniItem"><div class="tick"></div><div>Proceso claro</div></div>
+              <div class="miniItem"><div class="tick"></div><div>WhatsApp rápido</div></div>
+              <div class="miniItem"><div class="tick"></div><div>Estimado en 60s</div></div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- CASOS + MAPA (TEXT ONLY) -->
+    <!-- CASOS -->
     <section class="section" id="casos">
-      <div class="section-head">
+      <div class="head">
         <div>
           <h3>Casos por pueblo</h3>
-          <p class="sub">Toca un pueblo: se actualiza el caso destacado (sin fotos) y el CTA se adapta para cotizar más rápido.</p>
+          <div class="sub">Toca un pueblo: se actualiza el caso destacado y el formulario se prellena.</div>
         </div>
-        <a class="btn sun" href="#cotiza">Cotizar</a>
+        <a class="btn primary" href="#cotiza">Cotizar</a>
       </div>
 
       <div class="grid2">
-        <div class="panel mapbox">
-          <div class="map-title">
-            <strong>Mapa — Puerto Rico (selección rápida)</strong>
-            <span class="hint">Toca un pin</span>
+        <!-- MAP -->
+        <div class="card">
+          <div class="mapTitle">
+            <div>Mapa — Puerto Rico</div>
+            <div class="hint">Toca un pin</div>
           </div>
 
           <div class="island" id="island">
-            <!-- Pins (approx positions inside box) -->
+            <!-- Pins (posiciones aproximadas) -->
             <button class="pin active" data-town="San Juan" style="left:72%; top:32%;" aria-label="San Juan"></button>
-            <div class="pin-label" style="--x:72%; --y:32%;">San Juan</div>
+            <div class="label" style="--x:72%; --y:32%;">San Juan</div>
 
             <button class="pin" data-town="Bayamón" style="left:68%; top:36%;" aria-label="Bayamón"></button>
-            <div class="pin-label" style="--x:68%; --y:36%;">Bayamón</div>
+            <div class="label" style="--x:68%; --y:36%;">Bayamón</div>
 
             <button class="pin" data-town="Carolina" style="left:76%; top:34%;" aria-label="Carolina"></button>
-            <div class="pin-label" style="--x:76%; --y:34%;">Carolina</div>
+            <div class="label" style="--x:76%; --y:34%;">Carolina</div>
 
             <button class="pin" data-town="Caguas" style="left:72%; top:42%;" aria-label="Caguas"></button>
-            <div class="pin-label" style="--x:72%; --y:42%;">Caguas</div>
+            <div class="label" style="--x:72%; --y:42%;">Caguas</div>
 
             <button class="pin" data-town="Ponce" style="left:56%; top:70%;" aria-label="Ponce"></button>
-            <div class="pin-label" style="--x:56%; --y:70%;">Ponce</div>
+            <div class="label" style="--x:56%; --y:70%;">Ponce</div>
 
             <button class="pin" data-town="Mayagüez" style="left:25%; top:55%;" aria-label="Mayagüez"></button>
-            <div class="pin-label" style="--x:25%; --y:55%;">Mayagüez</div>
+            <div class="label" style="--x:25%; --y:55%;">Mayagüez</div>
 
             <button class="pin" data-town="Arecibo" style="left:42%; top:36%;" aria-label="Arecibo"></button>
-            <div class="pin-label" style="--x:42%; --y:36%;">Arecibo</div>
+            <div class="label" style="--x:42%; --y:36%;">Arecibo</div>
 
             <button class="pin" data-town="Humacao" style="left:83%; top:52%;" aria-label="Humacao"></button>
-            <div class="pin-label" style="--x:83%; --y:52%;">Humacao</div>
+            <div class="label" style="--x:83%; --y:52%;">Humacao</div>
 
             <button class="pin" data-town="Coamo" style="left:60%; top:62%;" aria-label="Coamo"></button>
-            <div class="pin-label" style="--x:60%; --y:62%;">Coamo</div>
+            <div class="label" style="--x:60%; --y:62%;">Coamo</div>
           </div>
 
-          <p class="sub" style="margin-top:14px;">
-            *Mapa simplificado para velocidad. Podemos añadir más pueblos luego.
-          </p>
+          <div class="sub" style="margin-top:12px;">
+            *Mapa simplificado para velocidad. Puedes añadir más pueblos luego.
+          </div>
         </div>
 
-        <div class="panel" aria-live="polite">
-          <div class="case-top">
+        <!-- CASE -->
+        <div class="card" aria-live="polite">
+          <div class="caseTop">
             <div>
-              <div class="case-title" id="caseTown">San Juan — Caso destacado</div>
-              <div class="sub" id="caseSub" style="margin-top:6px;">
-                Hogar residencial • Evaluación típica • Ajuste por consumo y techo.
-              </div>
+              <div class="caseTitle" id="caseTown">San Juan — Caso destacado</div>
+              <div class="caseSub" id="caseSub">Hogar residencial • Evaluación típica • Ajuste por consumo y techo.</div>
             </div>
-            <a class="btn sun" id="caseCTA" href="#cotiza">Cotizar para San Juan</a>
+            <a class="btn primary" id="caseCTA" href="#cotiza">Cotizar para San Juan</a>
           </div>
 
           <div class="kpis">
@@ -396,25 +576,25 @@
           </div>
 
           <div class="bullets" id="caseBullets">
-            <span><i></i><div>Prioridad: estabilidad durante apagones y reducción de dependencia de LUMA.</div></span>
-            <span><i></i><div>Se evalúa consumo, cargas críticas y condición del techo.</div></span>
-            <span><i></i><div>Recomendación: diseño personalizado (batería opcional según necesidad).</div></span>
+            <div class="b"><i></i><div>Prioridad: estabilidad durante apagones y reducir dependencia de LUMA.</div></div>
+            <div class="b"><i></i><div>Se revisa consumo, cargas críticas y condición del techo.</div></div>
+            <div class="b"><i></i><div>Diseño personalizado; batería opcional según necesidad.</div></div>
           </div>
 
-          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
-            <a class="btn primary" href="#cotiza">Ver si aplica en mi casa</a>
-            <a class="btn ghost" href="#reviews">Ver comentarios</a>
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <a class="btn dark" href="#cotiza">Ver si aplica en mi casa</a>
+            <a class="btn" href="#reviews">Ver comentarios</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SOCIAL PROOF (TEXT ONLY) -->
+    <!-- REVIEWS -->
     <section class="section" id="reviews">
-      <div class="section-head">
+      <div class="head">
         <div>
           <h3>Comentarios</h3>
-          <p class="sub">Prueba social sin fotos: corto, creíble y directo. (Edita textos según vayas teniendo casos reales.)</p>
+          <div class="sub">Corto y creíble. Edita textos con testimonios reales cuando los tengas.</div>
         </div>
       </div>
 
@@ -434,83 +614,30 @@
           <p>“Me ayudó a entender si me convenía y cómo sería el proceso paso a paso.”</p>
           <div class="who">Ponce</div>
         </div>
-        <div class="rev">
-          <div class="stars">★★★★★</div>
-          <p>“Lo más importante: fue honesto con lo que aplica y lo que no aplica.”</p>
-          <div class="who">San Juan</div>
-        </div>
-        <div class="rev">
-          <div class="stars">★★★★★</div>
-          <p>“Me gustó que primero preguntó mi consumo y necesidades antes de hablar de equipos.”</p>
-          <div class="who">Arecibo</div>
-        </div>
-        <div class="rev">
-          <div class="stars">★★★★★</div>
-          <p>“Orientación clara sobre backup y cargas críticas. Exactamente lo que buscaba.”</p>
-          <div class="who">Mayagüez</div>
-        </div>
       </div>
 
-      <p class="sub" style="margin-top:12px;">
-        *Resultados varían. Esta sección debe actualizarse con testimonios reales según los vayas obteniendo.
-      </p>
-    </section>
-
-    <!-- COMPARISON (NO IMAGES) -->
-    <section class="section" id="comparacion">
-      <div class="section-head">
-        <div>
-          <h3>Comparación simple</h3>
-          <p class="sub">Sin prometer “factura en $0”. Solo una comparación honesta para educar rápido.</p>
-        </div>
-      </div>
-
-      <div class="table panel">
-        <table>
-          <thead>
-            <tr>
-              <th>Seguir igual</th>
-              <th>Evaluación solar (según diseño)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="warn">Dependencia total de LUMA</td>
-              <td class="good">Más control y planificación</td>
-            </tr>
-            <tr>
-              <td class="warn">Apagones → interrupciones y estrés</td>
-              <td class="good">Opción de backup para cargas críticas</td>
-            </tr>
-            <tr>
-              <td class="warn">Pagos variables con cambios de tarifa</td>
-              <td class="good">Estrategia para estabilizar gasto (según consumo)</td>
-            </tr>
-            <tr>
-              <td class="warn">Sin claridad de “qué me conviene”</td>
-              <td class="good">Evaluación basada en tu consumo, techo y objetivos</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="sub" style="margin-top:12px;">
+        *Resultados varían según consumo, techo, sombras, equipos y diseño.
       </div>
     </section>
 
     <!-- FORM -->
     <section class="section" id="cotiza">
-      <div class="section-head">
+      <div class="head">
         <div>
           <h3>Cotiza en 60 segundos</h3>
-          <p class="sub">Formulario en 2 pasos (menos fricción) + botón WhatsApp prellenado para acelerar contacto.</p>
+          <div class="sub">2 pasos para subir conversión + botón WhatsApp prellenado.</div>
         </div>
       </div>
 
-      <div class="formgrid">
+      <div class="formGrid">
         <!-- Step 1 -->
         <div class="step" id="step1">
-          <div class="stephead">
+          <div class="stepHead">
             <strong>Paso 1 — Información rápida</strong>
-            <span class="tag">30s</span>
+            <div class="tag">30s</div>
           </div>
+
           <div class="stack">
             <div>
               <label for="name">Nombre</label>
@@ -537,16 +664,16 @@
               </div>
             </div>
 
-            <button class="btn sun" id="toStep2" type="button">Continuar</button>
-            <p class="sub">Usamos esto para darte una orientación más exacta. No spam.</p>
+            <button class="btn primary" id="toStep2" type="button">Continuar</button>
+            <div class="sub">Usamos esto para orientarte mejor. No spam.</div>
           </div>
         </div>
 
         <!-- Step 2 -->
         <div class="step hidden" id="step2">
-          <div class="stephead">
+          <div class="stepHead">
             <strong>Paso 2 — Contacto</strong>
-            <span class="tag">30s</span>
+            <div class="tag">30s</div>
           </div>
 
           <div class="stack">
@@ -566,19 +693,19 @@
 
             <label class="consent">
               <input id="consent" type="checkbox" />
-              <span>Autorizo a Ricardo Ortiz a contactarme para coordinar una evaluación solar. (No spam.)</span>
+              <span>Autorizo a Ricardo Ortiz a contactarme para una evaluación solar. (No spam.)</span>
             </label>
 
-            <button class="btn primary" id="submitLead" type="button">Enviar evaluación</button>
-            <button class="btn ghost" id="backStep1" type="button">Volver</button>
+            <button class="btn dark" id="submitLead" type="button">Enviar</button>
+            <button class="btn" id="backStep1" type="button">Volver</button>
 
             <div class="success hidden" id="successBox">
               <strong>¡Listo! Recibí tu evaluación.</strong>
               <p>Para acelerar, abre WhatsApp con tu mensaje prellenado y te respondo más rápido.</p>
-              <a class="btn sun" id="waBtn" href="#" target="_blank" rel="noopener">Abrir WhatsApp</a>
+              <a class="btn primary" id="waBtn" href="#" target="_blank" rel="noopener">Abrir WhatsApp</a>
             </div>
 
-            <p class="sub">*Resultados varían según consumo, techo, sombras, equipos y diseño.</p>
+            <div class="sub">*Resultados varían según consumo, techo, sombras, equipos y diseño.</div>
           </div>
         </div>
       </div>
@@ -586,110 +713,93 @@
 
     <div class="foot">
       <div>© <span id="y"></span> Ricardo Ortiz — Consultor Solar</div>
-      <div>Casos + mapa + evaluación rápida + WhatsApp</div>
+      <div>Minimal • Rápido • Estilo Wix</div>
     </div>
+
   </div>
 
   <script>
-    // ====== SETTINGS ======
-    const WA_NUMBER = "17874005116"; // +1 787-400-5116 (solo dígitos)
+    // ===== Settings =====
+    const WA_NUMBER = "17874005116"; // +1 787-400-5116
 
-    // ====== CASE DATA (text-only) ======
+    // ===== Case data =====
     const cases = {
       "San Juan": {
-        profile: "Residencial",
-        goal: "Backup + ahorro",
-        bill: "$250–$400",
-        sub: "Hogar residencial • Evaluación típica • Ajuste por consumo y techo.",
-        bullets: [
+        profile:"Residencial", goal:"Backup + ahorro", bill:"$250–$400",
+        sub:"Hogar residencial • Evaluación típica • Ajuste por consumo y techo.",
+        bullets:[
           "Prioridad: estabilidad durante apagones y reducir dependencia de LUMA.",
           "Se revisa consumo, cargas críticas y condición del techo.",
           "Diseño personalizado; batería opcional según necesidad."
         ]
       },
       "Bayamón": {
-        profile: "Residencial",
-        goal: "Ahorro mensual",
-        bill: "$150–$250",
-        sub: "Caso típico • Enfoque en optimizar el pago mensual según consumo.",
-        bullets: [
+        profile:"Residencial", goal:"Ahorro mensual", bill:"$150–$250",
+        sub:"Caso típico • Enfoque en optimizar el pago mensual según consumo.",
+        bullets:[
           "Objetivo: bajar gasto sin promesas irreales.",
           "Se revisa patrón de consumo y hábitos (aires, enseres).",
           "Diseño eficiente; escalable si luego se desea batería."
         ]
       },
       "Carolina": {
-        profile: "Residencial",
-        goal: "Backup en apagones",
-        bill: "$250–$400",
-        sub: "Caso típico • Interés principal: continuidad para cargas esenciales.",
-        bullets: [
-          "Prioridad: nevera, luces, abanicos y equipos críticos.",
-          "Se evalúa carga crítica y autonomía deseada.",
-          "Recomendación: plan con opción de batería según evaluación."
+        profile:"Residencial", goal:"Backup en apagones", bill:"$250–$400",
+        sub:"Caso típico • Interés principal: continuidad para cargas esenciales.",
+        bullets:[
+          "Prioridad: cargas esenciales (nevera, luces, abanicos).",
+          "Se define carga crítica y autonomía deseada.",
+          "Opción de batería según evaluación."
         ]
       },
       "Caguas": {
-        profile: "Residencial",
-        goal: "Ahorro + estabilidad",
-        bill: "$400+",
-        sub: "Caso típico • Consumo alto, enfoque en estrategia de estabilidad.",
-        bullets: [
+        profile:"Residencial", goal:"Ahorro + estabilidad", bill:"$400+",
+        sub:"Caso típico • Consumo alto, enfoque en estrategia de estabilidad.",
+        bullets:[
           "Objetivo: reducir exposición a cambios de tarifa.",
           "Se evalúa área útil del techo y sombras.",
-          "Diseño escalable y priorización de objetivos (ahorro vs backup)."
+          "Diseño escalable y priorización (ahorro vs backup)."
         ]
       },
       "Ponce": {
-        profile: "Residencial",
-        goal: "Ahorro",
-        bill: "$150–$250",
-        sub: "Caso típico • Balance costo-beneficio según uso real.",
-        bullets: [
+        profile:"Residencial", goal:"Ahorro", bill:"$150–$250",
+        sub:"Caso típico • Balance costo-beneficio según uso real.",
+        bullets:[
           "Objetivo: maximizar costo-beneficio.",
           "Se evalúa consumo promedio y techo disponible.",
           "Diseño ajustado; opciones según presupuesto."
         ]
       },
       "Mayagüez": {
-        profile: "Residencial",
-        goal: "Backup + ahorro",
-        bill: "$250–$400",
-        sub: "Caso típico • Enfoque mixto: continuidad + control.",
-        bullets: [
+        profile:"Residencial", goal:"Backup + ahorro", bill:"$250–$400",
+        sub:"Caso típico • Enfoque mixto: continuidad + control.",
+        bullets:[
           "Prioridad: estabilidad y planificación.",
           "Se revisa consumo y cargas críticas.",
-          "Diseño personalizado; batería opcional según necesidad."
+          "Diseño personalizado; batería opcional."
         ]
       },
       "Arecibo": {
-        profile: "Residencial",
-        goal: "Ahorro",
-        bill: "$0–$150",
-        sub: "Caso típico • Consumo moderado, enfoque en eficiencia.",
-        bullets: [
+        profile:"Residencial", goal:"Ahorro", bill:"$0–$150",
+        sub:"Caso típico • Consumo moderado, enfoque en eficiencia.",
+        bullets:[
           "Objetivo: bajar gasto de forma simple.",
           "Evaluación rápida de consumo + techo.",
           "Diseño eficiente para consumo moderado."
         ]
       },
       "Humacao": {
-        profile: "Residencial",
-        goal: "Backup",
-        bill: "$250–$400",
-        sub: "Caso típico • Respaldo como prioridad.",
-        bullets: [
+        profile:"Residencial", goal:"Backup", bill:"$250–$400",
+        sub:"Caso típico • Respaldo como prioridad.",
+        bullets:[
           "Prioridad: continuidad por interrupciones.",
           "Se define carga crítica para backup.",
           "Opción de batería según evaluación."
         ]
       },
       "Coamo": {
-        profile: "Residencial",
-        goal: "Ahorro + backup",
-        bill: "$150–$250",
-        sub: "Caso típico • Balance entre ahorro y respaldo básico.",
-        bullets: [
+        profile:"Residencial", goal:"Ahorro + backup", bill:"$150–$250",
+        sub:"Caso típico • Balance entre ahorro y respaldo básico.",
+        bullets:[
           "Objetivo: bajar gasto + respaldo básico.",
           "Se revisa consumo y equipos esenciales.",
           "Diseño escalable según prioridades."
@@ -697,41 +807,12 @@
       }
     };
 
-    // ====== PARALLAX ======
-    const layers = [
-      { el: document.getElementById("layerA"), strength: 10 },
-      { el: document.getElementById("layerB"), strength: 14 },
-      { el: document.getElementById("layerC"), strength: 8  },
-    ];
-    const hero = document.querySelector(".hero");
-    const clamp = (n,min,max)=>Math.max(min,Math.min(max,n));
-
-    hero.addEventListener("mousemove", (e)=>{
-      const r = hero.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width;
-      const y = (e.clientY - r.top) / r.height;
-      const dx = x - 0.5, dy = y - 0.5;
-
-      for(const L of layers){
-        if(!L.el) continue;
-        const tx = clamp(dx * L.strength, -18, 18);
-        const ty = clamp(dy * L.strength, -14, 14);
-        L.el.style.transform = `translate(${tx}px, ${ty}px)`;
-      }
-    });
-    hero.addEventListener("mouseleave", ()=>{
-      for(const L of layers){
-        if(!L.el) continue;
-        L.el.style.transform = "translate(0px,0px)";
-      }
-    });
-
-    // ====== MAP ======
+    // ===== Map interactions =====
     const pins = document.querySelectorAll(".pin");
     const townSelect = document.getElementById("town");
 
     const caseTown = document.getElementById("caseTown");
-    const caseSub  = document.getElementById("caseSub");
+    const caseSub = document.getElementById("caseSub");
     const kpiProfile = document.getElementById("kpiProfile");
     const kpiGoal = document.getElementById("kpiGoal");
     const kpiBill = document.getElementById("kpiBill");
@@ -741,15 +822,19 @@
     function renderCase(town){
       const c = cases[town] || cases["San Juan"];
       caseTown.textContent = `${town} — Caso destacado`;
-      caseSub.textContent  = c.sub;
+      caseSub.textContent = c.sub;
       kpiProfile.textContent = c.profile;
       kpiGoal.textContent = c.goal;
       kpiBill.textContent = c.bill;
-      caseBullets.innerHTML = c.bullets.map(b => `<span><i></i><div>${b}</div></span>`).join("");
+
+      caseBullets.innerHTML = c.bullets
+        .map(b => `<div class="b"><i></i><div>${b}</div></div>`)
+        .join("");
+
       caseCTA.textContent = `Cotizar para ${town}`;
       caseCTA.href = "#cotiza";
 
-      // Prefill form town
+      // prefill town select
       const opts = Array.from(townSelect.options).map(o => o.value);
       townSelect.value = opts.includes(town) ? town : "Otro";
     }
@@ -762,7 +847,7 @@
       });
     });
 
-    // ====== FORM ======
+    // ===== Form steps + WhatsApp =====
     const step1 = document.getElementById("step1");
     const step2 = document.getElementById("step2");
     const toStep2 = document.getElementById("toStep2");
@@ -813,7 +898,7 @@ Prefiero: ${pref}.
       successBox.scrollIntoView({behavior:"smooth", block:"nearest"});
     });
 
-    // Init
+    // init
     renderCase("San Juan");
     document.getElementById("y").textContent = new Date().getFullYear();
   </script>

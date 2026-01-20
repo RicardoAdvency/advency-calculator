@@ -1,212 +1,1031 @@
-name: CI/CD Pipeline
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ricardo Ortiz — Consultor Solar | Casos en Puerto Rico</title>
+  <meta name="description" content="Casos reales de energía solar en Puerto Rico. Toca tu pueblo, mira resultados y cotiza en 60 segundos con Ricardo Ortiz." />
 
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
-  release:
-    types: [ published ]
+  <style>
+    :root{
+      /* Solar palette (warm + clean) */
+      --bg:#ffffff;
+      --text:#0b1220;
+      --muted:#5b6b83;
+      --line:#e6ecf3;
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+      --char:#0b1220;          /* deep charcoal */
+      --sun:#FFB703;           /* solar amber */
+      --sun2:#FB8500;          /* warmer accent */
+      --green:#16a34a;         /* savings / good */
+      --red:#b42318;
 
-jobs:
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.9', '3.10', '3.11']
+      --shadow: 0 18px 50px rgba(11,18,32,.12);
+      --shadow2: 0 10px 28px rgba(11,18,32,.10);
+      --blur: saturate(140%) blur(10px);
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      --radius: 0px; /* keep it sharp */
+    }
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background:var(--bg);
+      color:var(--text);
+      letter-spacing:.1px;
+    }
+    a{color:inherit}
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 18px 70px}
 
-    - name: Cache Python dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+    /* Topbar */
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:10px 0 18px;
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:240px}
+    .logo{
+      width:44px;height:44px;
+      border:2px solid var(--char);
+      display:grid;place-items:center;
+      font-weight:900;letter-spacing:.5px;
+    }
+    .brand h1{
+      font-size:13px;margin:0;
+      font-weight:900;text-transform:uppercase;letter-spacing:.9px;
+    }
+    .brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+    .top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pytest pytest-asyncio httpx
+    /* Buttons */
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      padding:12px 14px;
+      border:1px solid var(--char);
+      background:transparent;color:var(--char);
+      text-decoration:none;font-weight:900;letter-spacing:.3px;
+      cursor:pointer;user-select:none;
+      border-radius: var(--radius);
+    }
+    .btn.primary{
+      background:var(--char);
+      color:#fff;
+      border-color: var(--char);
+    }
+    .btn.sun{
+      background: linear-gradient(135deg, var(--sun) 0%, var(--sun2) 100%);
+      color:#111;
+      border-color: transparent;
+    }
+    .btn.ghost{
+      border-color: var(--line);
+      color: var(--text);
+      background:#fff;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
 
-    - name: Lint with flake8
-      run: |
-        pip install flake8
-        # Stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # Treat all errors as warnings
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    /* HERO */
+    .hero{
+      position:relative;
+      border:1px solid var(--line);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      min-height: 540px;
+      background: #0b1220;
+      border-radius: var(--radius);
+    }
+    .hero video{
+      position:absolute;inset:0;width:100%;height:100%;
+      object-fit:cover;
+      filter: contrast(1.05) saturate(1.05);
+      transform: scale(1.02);
+    }
+    .hero::after{
+      content:"";
+      position:absolute;inset:0;
+      background:
+        radial-gradient(900px 500px at 20% 30%, rgba(255,183,3,.22) 0%, rgba(255,183,3,0) 60%),
+        linear-gradient(90deg, rgba(11,18,32,.82) 0%, rgba(11,18,32,.56) 45%, rgba(11,18,32,.10) 100%);
+      pointer-events:none;
+    }
+    .hero-inner{position:relative;z-index:2;padding:44px 26px;height:100%}
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:18px;
+      align-items:end;
+      min-height: 540px;
+    }
+    .kicker{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:10px 12px;
+      border:1px solid rgba(255,255,255,.22);
+      color:rgba(255,255,255,.92);
+      backdrop-filter: var(--blur);
+      background: rgba(255,255,255,.06);
+      font-weight:900;letter-spacing:.35px;
+      border-radius: var(--radius);
+    }
+    .kicker .dot{width:8px;height:8px;background:var(--sun)}
+    .hero h2{
+      margin:14px 0 0;
+      font-size:44px;line-height:1.03;
+      color:#fff;letter-spacing:.3px;
+    }
+    .hero p{
+      margin:12px 0 0;
+      color:rgba(255,255,255,.82);
+      font-size:15px;
+      max-width: 600px;
+      line-height:1.55;
+    }
+    .hero-cta{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
 
-    - name: Test application startup
-      run: |
-        # Start server in background with CI mode (skips indexing)
-        timeout 30 python run.py --host 127.0.0.1 --port 8001 --skip-index &
-        SERVER_PID=$!
+    /* “3D layers” */
+    .layer{
+      position:absolute;z-index:3;
+      will-change: transform;
+      transition: transform 120ms ease-out;
+      pointer-events:none;
+    }
+    .glass{
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.08);
+      color:#fff;
+      backdrop-filter: var(--blur);
+      box-shadow: var(--shadow2);
+      padding:14px 14px;
+      border-radius: var(--radius);
+    }
+    .badge{
+      font-weight:900;letter-spacing:.35px;text-transform:uppercase;font-size:12px;
+      display:inline-flex;gap:10px;align-items:center;
+    }
+    .badge .bar{width:44px;height:2px;background:var(--sun)}
+    .mini{
+      font-size:12px;color:rgba(255,255,255,.86);
+      margin-top:6px;line-height:1.35;
+    }
+    .list{
+      margin-top:10px;display:grid;gap:8px;font-size:12px;color:rgba(255,255,255,.92)
+    }
+    .li{display:flex;gap:10px;align-items:flex-start}
+    .tick{width:10px;height:10px;background:var(--sun);margin-top:4px}
+    .pill{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:10px 12px;border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.06);
+      color:#fff;font-weight:900;font-size:12px;
+      backdrop-filter: var(--blur);
+      border-radius: var(--radius);
+    }
+    .pill .spark{width:10px;height:10px;background:var(--green)}
+    .hero-right{
+      display:flex;flex-direction:column;gap:12px;align-items:flex-end;justify-content:flex-end;
+      padding-bottom: 10px;
+    }
 
-        # Wait for server to be ready (max 20 seconds)
-        echo "Waiting for server to start..."
-        for i in {1..20}; do
-          if curl -f http://127.0.0.1:8001/api/stats 2>/dev/null; then
-            echo "Server is ready!"
-            break
-          fi
-          if [ $i -eq 20 ]; then
-            echo "Server failed to start within 20 seconds"
-            exit 1
-          fi
-          echo "Attempt $i/20..."
-          sleep 1
-        done
+    /* Sections */
+    .section{margin-top:22px}
+    .section-head{
+      display:flex;align-items:flex-end;justify-content:space-between;gap:14px;
+      border-top:1px solid var(--line);
+      padding-top:18px;
+    }
+    .section h3{margin:0;font-size:18px;letter-spacing:.2px}
+    .section p.sub{margin:6px 0 0;color:var(--muted);font-size:13px;max-width: 720px;line-height:1.55}
 
-        # Clean up
-        kill $SERVER_PID 2>/dev/null || true
+    /* Map + case panel */
+    .map-grid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    .panel{
+      border:1px solid var(--line);
+      box-shadow: var(--shadow2);
+      padding:14px;
+      border-radius: var(--radius);
+      background:#fff;
+    }
 
-    - name: Test Docker build
-      run: |
-        docker build -t test-image:latest .
+    .map-box{
+      position:relative;
+      min-height: 420px;
+      background:
+        radial-gradient(700px 320px at 30% 30%, rgba(255,183,3,.12) 0%, rgba(255,183,3,0) 60%),
+        linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+      overflow:hidden;
+    }
+    .map-title{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin-bottom:12px;
+    }
+    .map-title strong{letter-spacing:.3px}
+    .hint{font-size:12px;color:var(--muted)}
+    .island{
+      position:absolute;inset:56px 14px 14px 14px;
+      border:1px solid var(--line);
+      background: #fff;
+      overflow:hidden;
+    }
+    .island::before{
+      content:"";
+      position:absolute;inset:0;
+      background:
+        radial-gradient(600px 260px at 40% 40%, rgba(255,183,3,.10) 0%, rgba(255,183,3,0) 60%),
+        radial-gradient(520px 240px at 70% 70%, rgba(22,163,74,.08) 0%, rgba(22,163,74,0) 60%);
+      pointer-events:none;
+    }
+    .pin{
+      position:absolute;
+      display:grid;place-items:center;
+      width:18px;height:18px;
+      border:2px solid var(--char);
+      background: linear-gradient(135deg, var(--sun) 0%, var(--sun2) 100%);
+      cursor:pointer;
+      box-shadow: 0 8px 18px rgba(11,18,32,.16);
+      transform: translate(-50%,-50%);
+      border-radius: var(--radius);
+    }
+    .pin:focus{outline:2px solid rgba(255,183,3,.55);outline-offset:2px}
+    .pin.active{border-color: #111; box-shadow: 0 10px 24px rgba(11,18,32,.22)}
+    .pin-label{
+      position:absolute;
+      transform: translate(-50%,-50%);
+      top: calc(var(--y) + 18px);
+      left: var(--x);
+      font-size:11px;
+      color: var(--char);
+      background:#fff;
+      padding:6px 8px;
+      border:1px solid var(--line);
+      box-shadow: 0 10px 24px rgba(11,18,32,.08);
+      white-space:nowrap;
+      border-radius: var(--radius);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity 120ms ease-out;
+    }
+    .pin:hover + .pin-label{opacity:1}
+    .case-kpis{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+      margin-top:12px;
+    }
+    .kpi{
+      border:1px solid var(--line);
+      padding:10px;
+      background:#fff;
+      border-radius: var(--radius);
+    }
+    .kpi .t{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.35px}
+    .kpi .v{margin-top:6px;font-weight:900}
+    .case-bullets{
+      margin-top:12px;
+      border-top:1px solid var(--line);
+      padding-top:10px;
+      display:grid;
+      gap:8px;
+      font-size:13px;
+      color: var(--text);
+    }
+    .case-bullets span{
+      display:flex;gap:10px;align-items:flex-start;
+    }
+    .case-bullets i{
+      width:10px;height:10px;background:var(--sun);
+      margin-top:5px;flex:0 0 auto;
+    }
 
-  security:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    needs: test
-    # Don't fail the workflow if Trivy finds issues
-    continue-on-error: true
-    permissions:
-      contents: read
-      security-events: write
-      actions: read
+    /* Before/After */
+    .ba-wrap{margin-top:14px}
+    .ba{
+      border:1px solid var(--line);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      position:relative;
+      height: 320px;
+      background:#fff;
+      border-radius: var(--radius);
+    }
+    .ba img{
+      position:absolute;inset:0;width:100%;height:100%;
+      object-fit:cover;
+      user-select:none;
+      pointer-events:none;
+    }
+    .ba .before{
+      width:50%;
+      overflow:hidden;
+      position:absolute;inset:0;
+    }
+    .ba .handle{
+      position:absolute;
+      top:0;bottom:0;
+      left:50%;
+      width:2px;background:#111;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.35);
+    }
+    .ba .knob{
+      position:absolute;left:50%;top:50%;
+      transform:translate(-50%,-50%);
+      width:44px;height:44px;
+      border:2px solid #111;
+      background: linear-gradient(135deg, var(--sun) 0%, var(--sun2) 100%);
+      display:grid;place-items:center;
+      border-radius: var(--radius);
+    }
+    .ba .knob span{font-weight:900}
+    .ba .label{
+      position:absolute;top:12px;
+      font-size:11px;font-weight:900;
+      letter-spacing:.35px;text-transform:uppercase;
+      padding:8px 10px;border:1px solid var(--line);
+      background:#fff;color:#111;
+      border-radius: var(--radius);
+    }
+    .ba .label.left{left:12px}
+    .ba .label.right{right:12px}
+    .range{
+      width:100%;
+      margin-top:10px;
+      accent-color: var(--sun2);
+    }
+    .small{font-size:12px;color:var(--muted);margin:8px 0 0;line-height:1.5}
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    /* Form */
+    .form-grid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+    }
+    label{display:block;font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.35px}
+    input, select{
+      width:100%;
+      padding:12px 12px;
+      border:1px solid var(--line);
+      outline:none;
+      font-size:14px;
+      background:#fff;
+      border-radius: var(--radius);
+    }
+    input:focus, select:focus{border-color: rgba(255,183,3,.55); box-shadow: 0 0 0 3px rgba(255,183,3,.15)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .stack{display:grid;gap:10px}
+    .step{
+      border:1px solid var(--line);
+      box-shadow: var(--shadow2);
+      padding:14px;
+      background:#fff;
+      border-radius: var(--radius);
+    }
+    .stephead{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:12px
+    }
+    .stephead strong{letter-spacing:.2px}
+    .stephead .tag{
+      font-size:11px;font-weight:900;
+      padding:6px 8px;border:1px solid var(--line);
+      background:#fff;color:#111;
+      border-radius: var(--radius);
+    }
+    .hidden{display:none !important}
+    .consent{
+      display:flex;gap:10px;align-items:flex-start;
+      font-size:12px;color:var(--muted);line-height:1.35;
+    }
+    .consent input{width:18px;height:18px;margin-top:1px}
+    .success{
+      border:1px solid rgba(22,163,74,.25);
+      background: rgba(22,163,74,.06);
+      padding:14px;
+      border-radius: var(--radius);
+    }
+    .success strong{display:block}
+    .success p{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
 
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
-        severity: 'CRITICAL,HIGH'
-        ignore-unfixed: true
-        trivyignores: '.trivyignore'
-        trivy-config: 'trivy.yaml'
-        exit-code: '0'  # Report only mode - won't fail the build
-        vuln-type: 'os,library'
-        skip-dirs: 'workflows,database,workflows_backup*,__pycache__,venv,.venv'
+    /* Footer */
+    .foot{
+      margin-top:22px;
+      border-top:1px solid var(--line);
+      padding-top:16px;
+      display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+      color:var(--muted);font-size:12px;
+    }
 
-    - name: Upload Trivy scan results
-      uses: github/codeql-action/upload-sarif@v3
-      if: always()
-      with:
-        sarif_file: 'trivy-results.sarif'
+    /* Responsive */
+    @media (max-width: 960px){
+      .hero-grid{grid-template-columns:1fr;min-height:560px}
+      .hero-right{align-items:flex-start}
+      .map-grid{grid-template-columns:1fr}
+      .form-grid{grid-template-columns:1fr}
+      .hero h2{font-size:38px}
+      .map-box{min-height:460px}
+    }
+  </style>
+</head>
 
-  build:
-    name: Build and Push Docker Image
-    runs-on: ubuntu-latest
-    needs: [test, security]
-    if: github.event_name != 'pull_request'
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">RO</div>
+        <div>
+          <h1>Ricardo Ortiz — Consultor Solar</h1>
+          <p>Casos reales en Puerto Rico • Evaluación rápida • Seguimiento por WhatsApp</p>
+        </div>
+      </div>
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      <div class="top-actions">
+        <a class="btn ghost" href="#mapa">Ver casos</a>
+        <a class="btn sun" href="#cotiza">Cotiza en 60s</a>
+      </div>
+    </div>
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+    <!-- HERO -->
+    <section class="hero" id="inicio">
+      <video autoplay muted loop playsinline preload="metadata" poster="">
+        <source src="assets/hero.mp4" type="video/mp4" />
+      </video>
 
-    - name: Log in to Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      <!-- Layers (3D/parallax) -->
+      <div class="layer glass" id="layerA" style="top:24px; right:24px; width: 280px;">
+        <div class="badge"><span class="bar"></span>Hecho para hogares con LUMA</div>
+        <div class="mini">Toca tu pueblo, mira un caso similar y recibe tu estimado en 60 segundos.</div>
+        <div class="list">
+          <div class="li"><div class="tick"></div><div>Backup durante apagones (según diseño)</div></div>
+          <div class="li"><div class="tick"></div><div>Evaluación honesta y clara</div></div>
+          <div class="li"><div class="tick"></div><div>Proceso guiado paso a paso</div></div>
+        </div>
+      </div>
 
-    - name: Extract metadata
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: |
-          type=ref,event=branch
-          type=ref,event=pr
-          type=semver,pattern={{version}}
-          type=semver,pattern={{major}}.{{minor}}
-          type=sha,prefix=sha-
+      <div class="layer pill" id="layerB" style="top:110px; left:36px;">
+        <div class="spark"></div><div>Ahorro potencial + estabilidad</div>
+      </div>
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+      <div class="layer glass" id="layerC" style="bottom:26px; right:24px; width: 300px;">
+        <div class="badge"><span class="bar"></span>Mapa de casos en PR</div>
+        <div class="mini">Selecciona tu pueblo para ver el caso destacado y cotizar.</div>
+      </div>
 
-  deploy-staging:
-    name: Deploy to Staging
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/develop'
-    environment: staging
+      <div class="hero-inner">
+        <div class="hero-grid">
+          <div>
+            <div class="kicker"><span class="dot"></span>Casos reales • Puerto Rico</div>
+            <h2>Mira resultados cerca de ti.<br/>Toca tu pueblo.</h2>
+            <p>
+              Esta página reúne casos y resultados de hogares en Puerto Rico.
+              Selecciona tu pueblo, revisa el caso destacado y completa una evaluación rápida para recibir tu estimado.
+            </p>
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+            <div class="hero-cta">
+              <a class="btn sun" href="#mapa">Ver casos por pueblo</a>
+              <a class="btn primary" href="#cotiza">Cotiza en 60 segundos</a>
+            </div>
 
-    - name: Deploy to staging
-      run: |
-        echo "Deploying to staging environment..."
-        # Add your staging deployment commands here
-        # Example: kubectl, docker-compose, or cloud provider CLI commands
+            <p class="small" style="color: rgba(255,255,255,.78); margin-top:14px;">
+              *Los resultados varían según consumo, techo, orientación, equipos y diseño del sistema.
+            </p>
+          </div>
 
-  deploy-production:
-    name: Deploy to Production
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
-    environment: production
+          <div class="hero-right">
+            <div class="pill"><div class="spark"></div><div>Respuesta rápida por WhatsApp</div></div>
+            <div class="pill"><div class="spark"></div><div>Evaluación sin presión</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    <!-- MAP SECTION -->
+    <section class="section" id="mapa">
+      <div class="section-head">
+        <div>
+          <h3>“Mira casos de clientes satisfechos en la isla”</h3>
+          <p class="sub">Toca un pueblo para ver el caso destacado. El formulario se adapta con tu selección para que sea más rápido cotizar.</p>
+        </div>
+        <a class="btn sun" href="#cotiza">Cotizar</a>
+      </div>
 
-    - name: Deploy to production
-      run: |
-        echo "Deploying to production environment..."
-        # Add your production deployment commands here
-        # Example: kubectl, docker-compose, or cloud provider CLI commands
+      <div class="map-grid">
+        <div class="panel map-box">
+          <div class="map-title">
+            <strong>Mapa — Puerto Rico (selección rápida)</strong>
+            <span class="hint">Tip: toca un pin</span>
+          </div>
 
-  notification:
-    name: Send Notifications
-    runs-on: ubuntu-latest
-    needs: [deploy-staging, deploy-production]
-    if: always() && (needs.deploy-staging.result != 'skipped' || needs.deploy-production.result != 'skipped')
+          <div class="island" id="island">
+            <!-- Pins (approximate positions inside the island box) -->
+            <button class="pin active" data-town="San Juan" style="left:72%; top:32%;" aria-label="San Juan"></button>
+            <div class="pin-label" style="--x:72%; --y:32%;">San Juan</div>
 
-    steps:
-    - name: Notify deployment status
-      run: |
-        if [[ "${{ needs.deploy-staging.result }}" == "success" || "${{ needs.deploy-production.result }}" == "success" ]]; then
-          echo "Deployment successful!"
-        else
-          echo "Deployment failed!"
-        fi
+            <button class="pin" data-town="Bayamón" style="left:68%; top:36%;" aria-label="Bayamón"></button>
+            <div class="pin-label" style="--x:68%; --y:36%;">Bayamón</div>
+
+            <button class="pin" data-town="Carolina" style="left:76%; top:34%;" aria-label="Carolina"></button>
+            <div class="pin-label" style="--x:76%; --y:34%;">Carolina</div>
+
+            <button class="pin" data-town="Caguas" style="left:72%; top:42%;" aria-label="Caguas"></button>
+            <div class="pin-label" style="--x:72%; --y:42%;">Caguas</div>
+
+            <button class="pin" data-town="Ponce" style="left:56%; top:70%;" aria-label="Ponce"></button>
+            <div class="pin-label" style="--x:56%; --y:70%;">Ponce</div>
+
+            <button class="pin" data-town="Mayagüez" style="left:25%; top:55%;" aria-label="Mayagüez"></button>
+            <div class="pin-label" style="--x:25%; --y:55%;">Mayagüez</div>
+
+            <button class="pin" data-town="Arecibo" style="left:42%; top:36%;" aria-label="Arecibo"></button>
+            <div class="pin-label" style="--x:42%; --y:36%;">Arecibo</div>
+
+            <button class="pin" data-town="Humacao" style="left:83%; top:52%;" aria-label="Humacao"></button>
+            <div class="pin-label" style="--x:83%; --y:52%;">Humacao</div>
+
+            <button class="pin" data-town="Coamo" style="left:60%; top:62%;" aria-label="Coamo"></button>
+            <div class="pin-label" style="--x:60%; --y:62%;">Coamo</div>
+
+            <button class="pin" data-town="Guaynabo" style="left:70%; top:38%;" aria-label="Guaynabo"></button>
+            <div class="pin-label" style="--x:70%; --y:38%;">Guaynabo</div>
+
+            <button class="pin" data-town="Toa Baja" style="left:64%; top:34%;" aria-label="Toa Baja"></button>
+            <div class="pin-label" style="--x:64%; --y:34%;">Toa Baja</div>
+
+            <button class="pin" data-town="Gurabo" style="left:76%; top:44%;" aria-label="Gurabo"></button>
+            <div class="pin-label" style="--x:76%; --y:44%;">Gurabo</div>
+          </div>
+
+          <p class="small" style="margin-top:14px;">
+            *Mapa simplificado para experiencia rápida. Podemos añadir más pueblos y casos.
+          </p>
+        </div>
+
+        <div class="panel" aria-live="polite">
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;">
+            <div>
+              <strong id="caseTown" style="font-size:16px;letter-spacing:.2px;">San Juan — Caso destacado</strong>
+              <div id="caseSub" class="small" style="margin-top:6px;">Hogar residencial • Evaluación reciente • Resultado basado en consumo y diseño.</div>
+            </div>
+            <a class="btn sun" id="caseCTA" href="#cotiza">Cotizar para San Juan</a>
+          </div>
+
+          <div class="case-kpis">
+            <div class="kpi">
+              <div class="t">Perfil</div>
+              <div class="v" id="kpiProfile">Residencial</div>
+            </div>
+            <div class="kpi">
+              <div class="t">Meta</div>
+              <div class="v" id="kpiGoal">Backup + ahorro</div>
+            </div>
+            <div class="kpi">
+              <div class="t">Rango factura</div>
+              <div class="v" id="kpiBill">$250–$400</div>
+            </div>
+          </div>
+
+          <div class="case-bullets" id="caseBullets">
+            <span><i></i><div>Prioridad: estabilidad durante apagones y reducción de dependencia de LUMA.</div></span>
+            <span><i></i><div>Se evaluó consumo, orientación del techo y espacio disponible.</div></span>
+            <span><i></i><div>Recomendación: diseño personalizado con opción de batería (según necesidad).</div></span>
+          </div>
+
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+            <a class="btn primary" href="#beforeafter">Ver antes/después</a>
+            <a class="btn ghost" href="#cotiza">Ver si aplica en mi casa</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BEFORE/AFTER -->
+    <section class="section" id="beforeafter">
+      <div class="section-head">
+        <div>
+          <h3>Antes / Después (arrastrable)</h3>
+          <p class="sub">Usa esto para mostrar el cambio visual o comparaciones (techo, factura, apagón vs backup). Cambia las imágenes por las tuyas.</p>
+        </div>
+      </div>
+
+      <div class="ba-wrap">
+        <div class="ba" id="ba">
+          <!-- Replace these with your images -->
+          <img src="assets/after.jpg" alt="Después" />
+          <div class="before" id="beforeLayer">
+            <img src="assets/before.jpg" alt="Antes" />
+          </div>
+
+          <div class="label left">Antes</div>
+          <div class="label right">Después</div>
+
+          <div class="handle" id="handle">
+            <div class="knob"><span>↔</span></div>
+          </div>
+        </div>
+
+        <input class="range" id="range" type="range" min="0" max="100" value="50" aria-label="Control de antes y después" />
+        <p class="small">Tip: si no tienes fotos reales, usa mockups (techo sin placas vs con placas) o comparación de factura.</p>
+      </div>
+    </section>
+
+    <!-- FORM -->
+    <section class="section" id="cotiza">
+      <div class="section-head">
+        <div>
+          <h3>Cotiza en 60 segundos</h3>
+          <p class="sub">Formulario en 2 pasos para subir conversión. Tu pueblo se prellena según la selección del mapa.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <!-- STEP 1 -->
+        <div class="step" id="step1">
+          <div class="stephead">
+            <strong>Paso 1 — Información rápida</strong>
+            <span class="tag">30s</span>
+          </div>
+
+          <div class="stack">
+            <div>
+              <label for="name">Nombre</label>
+              <input id="name" type="text" placeholder="Ej. María Rivera" autocomplete="name" />
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="town">Pueblo</label>
+                <select id="town">
+                  <option>San Juan</option><option>Bayamón</option><option>Carolina</option><option>Caguas</option>
+                  <option>Ponce</option><option>Mayagüez</option><option>Arecibo</option><option>Humacao</option>
+                  <option>Coamo</option><option>Guaynabo</option><option>Toa Baja</option><option>Gurabo</option>
+                  <option>Otro</option>
+                </select>
+              </div>
+              <div>
+                <label for="bill">Factura LUMA (rango)</label>
+                <select id="bill">
+                  <option value="0-150">$0–$150</option>
+                  <option value="150-250">$150–$250</option>
+                  <option value="250-400" selected>$250–$400</option>
+                  <option value="400+">$400+</option>
+                </select>
+              </div>
+            </div>
+
+            <button class="btn sun" id="toStep2" type="button">Continuar</button>
+            <p class="small">No tomamos decisiones aquí. Solo usamos esto para darte un estimado más exacto.</p>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step hidden" id="step2">
+          <div class="stephead">
+            <strong>Paso 2 — Contacto</strong>
+            <span class="tag">30s</span>
+          </div>
+
+          <div class="stack">
+            <div class="row">
+              <div>
+                <label for="phone">Teléfono</label>
+                <input id="phone" type="tel" placeholder="787-___-____" autocomplete="tel" />
+              </div>
+              <div>
+                <label for="pref">Preferencia</label>
+                <select id="pref">
+                  <option value="whatsapp" selected>WhatsApp</option>
+                  <option value="llamada">Llamada</option>
+                </select>
+              </div>
+            </div>
+
+            <label class="consent">
+              <input id="consent" type="checkbox" />
+              <span>Autorizo a Ricardo Ortiz a contactarme para coordinar una evaluación solar. (No spam.)</span>
+            </label>
+
+            <button class="btn primary" id="submitLead" type="button">Enviar evaluación</button>
+            <button class="btn ghost" id="backStep1" type="button">Volver</button>
+
+            <div class="success hidden" id="successBox">
+              <strong>¡Listo! Recibí tu evaluación.</strong>
+              <p>Para acelerar el proceso, abre WhatsApp con tu mensaje prellenado y te respondo más rápido.</p>
+              <a class="btn sun" id="waBtn" href="#" target="_blank" rel="noopener">Abrir WhatsApp</a>
+            </div>
+
+            <p class="small">
+              *Los resultados varían según consumo, techo, orientación, equipos y diseño del sistema.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="foot">
+      <div>© <span id="y"></span> Ricardo Ortiz — Consultor Solar</div>
+      <div>Hecho para convertir: casos + mapa + evaluación rápida + WhatsApp</div>
+    </div>
+  </div>
+
+  <script>
+    // ====== SETTINGS ======
+    const WA_NUMBER = "17874005116"; // +1 787-400-5116 (use digits only)
+
+    // ====== DATA (edit these cases) ======
+    const cases = {
+      "San Juan": {
+        profile: "Residencial",
+        goal: "Backup + ahorro",
+        bill: "$250–$400",
+        sub: "Hogar residencial • Evaluación reciente • Ajuste por consumo y techo.",
+        bullets: [
+          "Prioridad: estabilidad durante apagones y reducción de dependencia de LUMA.",
+          "Se evaluó consumo, orientación del techo y espacio disponible.",
+          "Recomendación: diseño personalizado con opción de batería (según necesidad)."
+        ]
+      },
+      "Bayamón": {
+        profile: "Residencial",
+        goal: "Ahorro mensual",
+        bill: "$150–$250",
+        sub: "Hogar residencial • Caso destacado • Enfoque en optimizar pago mensual.",
+        bullets: [
+          "Objetivo: bajar gasto mensual sin sacrificar comodidad.",
+          "Se revisó el patrón de consumo y horarios de uso.",
+          "Diseño recomendado: sistema ajustado a kWh + opción futura de batería."
+        ]
+      },
+      "Carolina": {
+        profile: "Residencial",
+        goal: "Backup en apagones",
+        bill: "$250–$400",
+        sub: "Zona este • Caso destacado • Interés principal: continuidad.",
+        bullets: [
+          "Prioridad: mantener nevera/aires/luces durante interrupciones.",
+          "Se consideró carga crítica y hábitos de consumo.",
+          "Recomendación: sistema con enfoque en resiliencia (según evaluación)."
+        ]
+      },
+      "Caguas": {
+        profile: "Residencial",
+        goal: "Ahorro + estabilidad",
+        bill: "$400+",
+        sub: "Centro • Caso destacado • Consumo alto.",
+        bullets: [
+          "Objetivo: reducir exposición a aumentos y cortes.",
+          "Se evaluó espacio de techo y posibles sombras.",
+          "Recomendación: diseño escalable (batería opcional según prioridades)."
+        ]
+      },
+      "Ponce": {
+        profile: "Residencial",
+        goal: "Ahorro",
+        bill: "$150–$250",
+        sub: "Sur • Caso destacado • Optimización costo-beneficio.",
+        bullets: [
+          "Se buscó un balance entre pago y producción estimada.",
+          "Se evaluó orientación/área útil del techo.",
+          "Recomendación: sistema ajustado a consumo real."
+        ]
+      },
+      "Mayagüez": {
+        profile: "Residencial",
+        goal: "Backup + ahorro",
+        bill: "$250–$400",
+        sub: "Oeste • Caso destacado • Enfoque mixto.",
+        bullets: [
+          "Prioridad: mantener operaciones básicas durante apagones.",
+          "Se revisó consumo promedio y cargas críticas.",
+          "Recomendación: diseño con opción de respaldo (según evaluación)."
+        ]
+      },
+      "Arecibo": {
+        profile: "Residencial",
+        goal: "Ahorro",
+        bill: "$0–$150",
+        sub: "Norte • Caso destacado • Consumo moderado.",
+        bullets: [
+          "Objetivo: reducir gasto sin complicaciones.",
+          "Evaluación rápida de techo y consumo.",
+          "Recomendación: sistema eficiente para consumo moderado."
+        ]
+      },
+      "Humacao": {
+        profile: "Residencial",
+        goal: "Backup",
+        bill: "$250–$400",
+        sub: "Este • Caso destacado • Respaldo como prioridad.",
+        bullets: [
+          "Prioridad: continuidad por interrupciones frecuentes.",
+          "Se consideró carga crítica para batería.",
+          "Recomendación: enfoque en resiliencia (según evaluación)."
+        ]
+      },
+      "Coamo": {
+        profile: "Residencial",
+        goal: "Ahorro + backup",
+        bill: "$150–$250",
+        sub: "Sur/Centro • Caso destacado • Balance.",
+        bullets: [
+          "Objetivo: bajar gasto y tener respaldo básico.",
+          "Se revisó consumo y equipos esenciales.",
+          "Recomendación: diseño personalizado escalable."
+        ]
+      },
+      "Guaynabo": {
+        profile: "Residencial",
+        goal: "Ahorro",
+        bill: "$250–$400",
+        sub: "Metro • Caso destacado • Optimización mensual.",
+        bullets: [
+          "Objetivo: reducir dependencia de LUMA.",
+          "Se evaluó consumo y orientación.",
+          "Recomendación: diseño según kWh y metas."
+        ]
+      },
+      "Toa Baja": {
+        profile: "Residencial",
+        goal: "Backup",
+        bill: "$250–$400",
+        sub: "Metro/Norte • Caso destacado • Continuidad.",
+        bullets: [
+          "Prioridad: respaldo para cargas esenciales.",
+          "Se revisó consumo y equipos críticos.",
+          "Recomendación: batería opcional (según evaluación)."
+        ]
+      },
+      "Gurabo": {
+        profile: "Residencial",
+        goal: "Ahorro + estabilidad",
+        bill: "$150–$250",
+        sub: "Centro/Eeste • Caso destacado • Balance.",
+        bullets: [
+          "Objetivo: mejorar estabilidad y reducir gasto.",
+          "Se evaluó consumo y techo.",
+          "Recomendación: diseño ajustado a hábitos."
+        ]
+      }
+    };
+
+    // ====== PARALLAX (3D layers) ======
+    const layers = [
+      { el: document.getElementById("layerA"), strength: 10 },
+      { el: document.getElementById("layerB"), strength: 14 },
+      { el: document.getElementById("layerC"), strength: 8  },
+    ];
+    const hero = document.querySelector(".hero");
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    hero.addEventListener("mousemove", (e) => {
+      const r = hero.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width;   // 0..1
+      const y = (e.clientY - r.top) / r.height;   // 0..1
+      const dx = (x - 0.5);
+      const dy = (y - 0.5);
+
+      for(const L of layers){
+        if(!L.el) continue;
+        const tx = clamp(dx * L.strength, -18, 18);
+        const ty = clamp(dy * L.strength, -14, 14);
+        L.el.style.transform = `translate(${tx}px, ${ty}px)`;
+      }
+    });
+    hero.addEventListener("mouseleave", () => {
+      for(const L of layers){
+        if(!L.el) continue;
+        L.el.style.transform = "translate(0px, 0px)";
+      }
+    });
+
+    // ====== MAP INTERACTION ======
+    const pins = document.querySelectorAll(".pin");
+    const townSelect = document.getElementById("town");
+
+    const caseTown = document.getElementById("caseTown");
+    const caseSub  = document.getElementById("caseSub");
+    const kpiProfile = document.getElementById("kpiProfile");
+    const kpiGoal = document.getElementById("kpiGoal");
+    const kpiBill = document.getElementById("kpiBill");
+    const caseBullets = document.getElementById("caseBullets");
+    const caseCTA = document.getElementById("caseCTA");
+
+    function renderCase(town){
+      const c = cases[town] || cases["San Juan"];
+      caseTown.textContent = `${town} — Caso destacado`;
+      caseSub.textContent  = c.sub;
+      kpiProfile.textContent = c.profile;
+      kpiGoal.textContent = c.goal;
+      kpiBill.textContent = c.bill;
+
+      caseBullets.innerHTML = c.bullets.map(b => (
+        `<span><i></i><div>${b}</div></span>`
+      )).join("");
+
+      caseCTA.textContent = `Cotizar para ${town}`;
+      caseCTA.setAttribute("href", "#cotiza");
+
+      // Pre-fill form town
+      if(townSelect){
+        const opts = Array.from(townSelect.options).map(o => o.value);
+        townSelect.value = opts.includes(town) ? town : "Otro";
+      }
+    }
+
+    pins.forEach(p => {
+      p.addEventListener("click", () => {
+        pins.forEach(x => x.classList.remove("active"));
+        p.classList.add("active");
+        const town = p.dataset.town;
+        renderCase(town);
+      });
+    });
+
+    // Initialize
+    renderCase("San Juan");
+    document.getElementById("y").textContent = new Date().getFullYear();
+
+    // ====== BEFORE/AFTER SLIDER ======
+    const range = document.getElementById("range");
+    const beforeLayer = document.getElementById("beforeLayer");
+    const handle = document.getElementById("handle");
+
+    function setBA(v){
+      const pct = `${v}%`;
+      beforeLayer.style.width = pct;
+      handle.style.left = pct;
+    }
+    range.addEventListener("input", (e) => setBA(e.target.value));
+    setBA(50);
+
+    // ====== FORM 2 STEPS + WhatsApp ======
+    const step1 = document.getElementById("step1");
+    const step2 = document.getElementById("step2");
+    const toStep2 = document.getElementById("toStep2");
+    const backStep1 = document.getElementById("backStep1");
+    const submitLead = document.getElementById("submitLead");
+    const successBox = document.getElementById("successBox");
+    const waBtn = document.getElementById("waBtn");
+
+    const nameEl = document.getElementById("name");
+    const billEl = document.getElementById("bill");
+    const phoneEl = document.getElementById("phone");
+    const prefEl = document.getElementById("pref");
+    const consentEl = document.getElementById("consent");
+
+    toStep2.addEventListener("click", () => {
+      // light validation
+      const nm = (nameEl.value || "").trim();
+      if(nm.length < 2){
+        nameEl.focus();
+        nameEl.style.borderColor = "rgba(255,183,3,.75)";
+        return;
+      }
+      step1.classList.add("hidden");
+      step2.classList.remove("hidden");
+      phoneEl.focus();
+    });
+
+    backStep1.addEventListener("click", () => {
+      step2.classList.add("hidden");
+      step1.classList.remove("hidden");
+      successBox.classList.add("hidden");
+    });
+
+    submitLead.addEventListener("click", () => {
+      const ph = (phoneEl.value || "").trim();
+      if(ph.length < 7){
+        phoneEl.focus();
+        phoneEl.style.borderColor = "rgba(255,183,3,.75)";
+        return;
+      }
+      if(!consentEl.checked){
+        consentEl.focus();
+        return;
+      }
+
+      // Build WhatsApp message
+      const town = townSelect.value;
+      const bill = billEl.options[billEl.selectedIndex].textContent;
+      const nm = (nameEl.value || "").trim();
+      const pref = prefEl.value;
+
+      const msg =
+`Hola Ricardo, soy ${nm}.
+Mi pueblo: ${town}.
+Mi factura LUMA: ${bill}.
+Prefiero: ${pref}.
+¿Me puedes orientar con una evaluación solar?`;
+
+      const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+      waBtn.href = url;
+
+      successBox.classList.remove("hidden");
+      successBox.scrollIntoView({behavior:"smooth", block:"nearest"});
+    });
+  </script>
+</body>
+</html>

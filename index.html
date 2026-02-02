@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advency - Sistema de Ventas Automatizado</title>
+    <style>
+        /* ===== RESET Y VARIABLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-dark-blue: #0A1F44;
+            --color-light-blue: #00B4D8;
+            --color-white: #FFFFFF;
+            --color-light-gray: #F1F3F5;
+            --color-text: #2D3748;
+            --color-text-light: #718096;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== TIPOGRAFÍA ===== */
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--color-dark-blue);
+        }
+
+        h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+        h2 { font-size: clamp(1.75rem, 4vw, 2.5rem); }
+        h3 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
+
+        /* ===== UTILIDADES ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--color-light-blue);
+            color: var(--color-white);
+            box-shadow: 0 4px 14px rgba(0, 180, 216, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #0096b8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-dark-blue);
+            border: 2px solid var(--color-dark-blue);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-dark-blue);
+            color: var(--color-white);
+            transform: translateY(-2px);
+        }
+
+        /* ===== HEADER/NAVEGACIÓN ===== */
+        .header {
+            background: var(--color-white);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--color-dark-blue);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--color-light-blue);
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            background: linear-gradient(135deg, var(--color-dark-blue) 0%, #0d2d5e 100%);
+            color: var(--color-white);
+            padding: 120px 0 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: var(--color-light-blue);
+            opacity: 0.1;
+            border-radius: 50%;
+            top: -250px;
+            right: -250px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            color: var(--color-white);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease 0.2s backwards;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.4s backwards;
+        }
+
+        .hero-cta .btn-secondary {
+            border-color: rgba(255, 255, 255, 0.4);
+            color: var(--color-white);
+        }
+
+        .hero-cta .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--color-white);
+        }
+
+        /* ===== SECCIONES GENERALES ===== */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            margin-bottom: 16px;
+        }
+
+        .section-title p {
+            font-size: 1.2rem;
+            color: var(--color-text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ===== PROBLEMA SECTION ===== */
+        .problem {
+            background: var(--color-light-gray);
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .problem-item {
+            background: var(--color-white);
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .problem-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .problem-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .problem-item h3 {
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+
+        .problem-item p {
+            color: var(--color-text-light);
+        }
+
+        /* ===== SOLUCIÓN SECTION ===== */
+        .solution-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .solution-text h2 {
+            margin-bottom: 24px;
+        }
+
+        .solution-text p {
+            font-size: 1.15rem;
+            color: var(--color-text-light);
+            margin-bottom: 32px;
+        }
+
+        .benefits-list {
+            list-style: none;
+        }
+
+        .benefits-list li {
+            padding: 16px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            border-bottom: 1px solid var(--color-light-gray);
+        }
+
+        .benefits-list li:last-child {
+            border-bottom: none;
+        }
+
+        .check-icon {
+            color: var(--color-light-blue);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .solution-visual {
+            background: linear-gradient(135deg, var(--color-light-blue), #00d4ff);
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+            color: var(--color-white);
+            box-shadow: 0 20px 40px rgba(0, 180, 216, 0.2);
+        }
+
+        .solution-visual h3 {
+            color: var(--color-white);
+            margin-bottom: 20px;
+        }
+
+        /* ===== FEATURES SECTION ===== */
+        .features {
+            background: var(--color-light-gray);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: var(--color-white);
+            padding: 40px 32px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            border-color: var(--color-light-blue);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--color-light-blue), #00d4ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 2rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 16px;
+        }
+
+        .feature-card p {
+            color: var(--color-text-light);
+        }
+
+        /* ===== CÓMO FUNCIONA ===== */
+        .steps-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 60px;
+            align-items: flex-start;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: var(--color-light-blue);
+            color: var(--color-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            margin-bottom: 12px;
+        }
+
+        .step-content p {
+            color: var(--color-text-light);
+            font-size: 1.1rem;
+        }
+
+        /* ===== PARA QUIÉN ES ===== */
+        .audience {
+            background: var(--color-dark-blue);
+            color: var(--color-white);
+        }
+
+        .audience .section-title h2,
+        .audience .section-title p {
+            color: var(--color-white);
+        }
+
+        .audience-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .audience-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 32px 24px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .audience-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--color-light-blue);
+            transform: scale(1.05);
+        }
+
+        .audience-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .audience-item h3 {
+            color: var(--color-white);
+            font-size: 1.2rem;
+        }
+
+        /* ===== CTA FINAL ===== */
+        .cta-final {
+            background: linear-gradient(135deg, var(--color-light-blue), #00d4ff);
+            color: var(--color-white);
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .cta-final h2 {
+            color: var(--color-white);
+            margin-bottom: 16px;
+        }
+
+        .cta-final p {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .cta-final .btn-primary {
+            background: var(--color-white);
+            color: var(--color-light-blue);
+            font-size: 1.2rem;
+            padding: 20px 48px;
+        }
+
+        .cta-final .btn-primary:hover {
+            background: var(--color-dark-blue);
+            color: var(--color-white);
+            transform: translateY(-4px);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--color-dark-blue);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .footer p {
+            margin-bottom: 8px;
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 80px 0 60px;
+            }
+
+            .section {
+                padding: 60px 0;
+            }
+
+            .solution-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .solution-visual {
+                order: -1;
+            }
+
+            .step {
+                flex-direction: column;
+                gap: 20px;
+                margin-bottom: 40px;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .audience-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="#" class="logo">Adven<span>cy</span></a>
+                <a href="#demo" class="btn btn-primary">Solicitar demo</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Convierte leads en cierres. Automáticamente.</h1>
+                <p class="hero-subtitle">
+                    El sistema de ventas y seguimiento automatizado que convierte tus conversaciones en clientes sin perder ninguna oportunidad.
+                </p>
+                <div class="hero-cta">
+                    <a href="#demo" class="btn btn-primary">Solicitar demo</a>
+                    <a href="#como-funciona" class="btn btn-secondary">Ver cómo funciona</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROBLEMA -->
+    <section class="problem section">
+        <div class="container">
+            <div class="section-title">
+                <h2>¿Te suena familiar?</h2>
+                <p>Estos son los dolores de cabeza que eliminamos cada día</p>
+            </div>
+            <div class="problem-grid">
+                <div class="problem-item">
+                    <div class="problem-icon">💸</div>
+                    <h3>Pérdida de leads</h3>
+                    <p>Clientes potenciales que se escapan porque no hiciste seguimiento a tiempo.</p>
+                </div>
+                <div class="problem-item">
+                    <div class="problem-icon">📱</div>
+                    <h3>Caos en WhatsApp</h3>
+                    <p>Conversaciones desordenadas, mensajes perdidos y oportunidades olvidadas.</p>
+                </div>
+                <div class="problem-item">
+                    <div class="problem-icon">⏰</div>
+                    <h3>Seguimiento manual</h3>
+                    <p>Perder horas recordando a quién contactar y cuándo hacerlo.</p>
+                </div>
+                <div class="problem-item">
+                    <div class="problem-icon">🤯</div>
+                    <h3>CRM complicados</h3>
+                    <p>Sistemas difíciles de usar que nadie en tu equipo quiere adoptar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOLUCIÓN -->
+    <section class="solution section">
+        <div class="container">
+            <div class="solution-content">
+                <div class="solution-text">
+                    <h2>Tu sistema de ventas todo-en-uno</h2>
+                    <p>
+                        Advency centraliza, califica y da seguimiento automático a cada lead. Sin complicaciones, sin pérdidas.
+                    </p>
+                    <ul class="benefits-list">
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <span><strong>Captura inteligente:</strong> Centraliza leads de todos tus canales</span>
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <span><strong>Pre-calificación automática:</strong> Identifica clientes calientes al instante</span>
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <span><strong>Seguimiento programado:</strong> Nunca olvides contactar a un cliente</span>
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <span><strong>Scripts de ventas:</strong> Guías paso a paso para cerrar más</span>
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <span><strong>Pipeline visual:</strong> Ve todo tu embudo en un solo lugar</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="solution-visual">
+                    <h3>📊 Dashboard intuitivo</h3>
+                    <p style="font-size: 5rem; margin: 30px 0;">📈</p>
+                    <p>Control total de tu proceso de ventas en tiempo real</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Todo lo que necesitas para vender más</h2>
+                <p>Herramientas profesionales al alcance de un clic</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Dashboard de Leads</h3>
+                    <p>Visualiza todos tus contactos organizados por etapa, prioridad y temperatura.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h3>Seguimiento Automático</h3>
+                    <p>Recordatorios inteligentes que te avisan cuándo contactar a cada cliente.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Scripts de Ventas</h3>
+                    <p>Plantillas probadas que te guían en cada conversación para cerrar más.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Pipeline Visual</h3>
+                    <p>Arrastra y suelta tus leads entre etapas y ve tu progreso en tiempo real.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3>Pre-calificación</h3>
+                    <p>Sistema que identifica automáticamente qué leads tienen mayor probabilidad de compra.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Integración WhatsApp</h3>
+                    <p>Conecta tus conversaciones y gestiona todo desde un solo lugar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CÓMO FUNCIONA -->
+    <section id="como-funciona" class="how-it-works section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Cómo funciona Advency</h2>
+                <p>De la primera conversación al cierre en 4 pasos simples</p>
+            </div>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Captación automática</h3>
+                        <p>
+                            Tus leads llegan desde redes sociales, WhatsApp o formularios y se registran automáticamente en tu sistema. Sin copiar y pegar, sin pérdidas.
+                        </p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Pre-calificación inteligente</h3>
+                        <p>
+                            Advency analiza cada contacto y te muestra cuáles están listos para comprar ahora, cuáles necesitan más nurturing y cuáles descartar.
+                        </p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Seguimiento automatizado</h3>
+                        <p>
+                            El sistema te recuerda exactamente cuándo contactar a cada cliente, qué decirle y cómo moverlo hacia el cierre.
+                        </p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Cierre y conversión</h3>
+                        <p>
+                            Con scripts probados y un proceso claro, cierras más ventas en menos tiempo mientras Advency registra todo automáticamente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PARA QUIÉN ES -->
+    <section class="audience section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Diseñado para profesionales que venden</h2>
+                <p>Si gestionas leads, Advency es para ti</p>
+            </div>
+            <div class="audience-grid">
+                <div class="audience-item">
+                    <div class="audience-icon">☀️</div>
+                    <h3>Consultores Solares</h3>
+                </div>
+                <div class="audience-item">
+                    <div class="audience-icon">💼</div>
+                    <h3>Vendedores B2B</h3>
+                </div>
+                <div class="audience-item">
+                    <div class="audience-icon">🏠</div>
+                    <h3>Realtors</h3>
+                </div>
+                <div class="audience-item">
+                    <div class="audience-icon">🎓</div>
+                    <h3>Coaches</h3>
+                </div>
+                <div class="audience-item">
+                    <div class="audience-icon">🚀</div>
+                    <h3>Dueños de Agencias</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section id="demo" class="cta-final">
+        <div class="container">
+            <h2>Deja de perder ventas hoy mismo</h2>
+            <p>
+                Únete a los profesionales que han duplicado sus cierres con Advency
+            </p>
+            <a href="#" class="btn btn-primary">Activar Advency ahora</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Advency. Todos los derechos reservados.</p>
+            <p>El sistema de ventas automatizado para profesionales.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // Smooth scroll para los enlaces internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animación de fade-in al hacer scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observar elementos para animación
+        const animatedElements = document.querySelectorAll('.problem-item, .feature-card, .step, .audience-item');
+        animatedElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Efecto de hover mejorado en botones
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Simulación de acción al hacer clic en CTA
+        const ctaButtons = document.querySelectorAll('.btn-primary');
+        ctaButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // Aquí conectarías con tu sistema de registro/demo
+                console.log('CTA clicked - Integrar con sistema de registro');
+                
+                // Efecto visual de confirmación
+                const originalText = this.textContent;
+                this.textContent = '✓ ¡Contactaremos pronto!';
+                this.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    this.textContent = originalText;
+                    this.style.background = '';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

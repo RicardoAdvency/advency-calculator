@@ -4,13 +4,15 @@ import { GameCamera } from './camera.js';
 
 class ArcadeRacingGame {
   constructor() {
+    // Canvas y UI
+    this.canvas = document.getElementById('game-canvas');
     this.speedDisplay = document.getElementById('speed');
 
-    // 👇 Creamos la escena
+    // Escena
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x87ceeb);
 
-    // 👇 Cámara
+    // Cámara
     this.camera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
@@ -18,18 +20,22 @@ class ArcadeRacingGame {
       1000
     );
 
-    // 👇 Renderer y canvas
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    // Renderer USANDO TU CANVAS
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: this.canvas,
+      antialias: true
+    });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(this.renderer.domElement);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
 
-    // 👇 Enciende luz
+    // Luces
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(50, 50, 50);
     this.scene.add(directionalLight);
 
-    // 👇 Piso
+    // Piso
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(200, 200),
       new THREE.MeshPhongMaterial({ color: 0x2d5016 })
@@ -37,24 +43,25 @@ class ArcadeRacingGame {
     ground.rotation.x = -Math.PI / 2;
     this.scene.add(ground);
 
-    // 👇 Carro
+    // Carro
     this.car = new Car(this.scene);
 
-    // 👇 Input y cámara
-    this.inputManager = new InputManager();
+    // Input y cámara de seguimiento
+    this.input = new InputManager();
     this.gameCamera = new GameCamera(this.camera, this.car.getMesh());
     this.gameCamera.reset();
 
-    // 👇 resize
+    // Resize
     window.addEventListener('resize', () => this.onResize());
 
+    // Loop
     this.animate();
   }
 
   animate() {
     requestAnimationFrame(() => this.animate());
 
-    this.car.update(this.inputManager, 1);
+    this.car.update(this.input, 1);
     this.gameCamera.update(this.car.speed);
 
     if (this.speedDisplay) {
@@ -71,7 +78,7 @@ class ArcadeRacingGame {
   }
 }
 
-// 👇 Iniciar juego en cuanto cargue
+// Iniciar juego
 window.addEventListener('DOMContentLoaded', () => {
   new ArcadeRacingGame();
 });

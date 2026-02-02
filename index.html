@@ -1,24 +1,81 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arcade Racing - Core Prototype</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arcade Racing – Core Prototype</title>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #game-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    canvas {
+      display: block;
+      outline: none;
+    }
+
+    #hud {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      color: white;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      z-index: 10;
+      user-select: none;
+    }
+
+    #hint {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      z-index: 10;
+      user-select: none;
+    }
+  </style>
 </head>
+
 <body>
-    <div id="game-container">
-        <canvas id="game-canvas"></canvas>
-        <div id="debug-info">
-            <p>Velocidad: <span id="speed">0</span> km/h</p>
-            <p>Controles: W/S (Acelerar/Frenar) | A/D (Girar)</p>
-        </div>
+  <div id="game-container">
+    <!-- CANVAS PRO (FOCO AUTOMÁTICO) -->
+    <canvas id="game-canvas" tabindex="0"></canvas>
+
+    <!-- HUD -->
+    <div id="hud">
+      Velocidad: <strong><span id="speed">0</span> km/h</strong>
     </div>
 
-    <!-- Three.js CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    
-    <!-- Módulos del juego -->
-    <script type="module" src="main.js"></script>
+    <!-- CONTROLES -->
+    <div id="hint">
+      Controles: W / A / S / D
+    </div>
+  </div>
+
+  <!-- THREE.JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- JUEGO -->
+  <script type="module" src="main.js"></script>
 </body>
 </html>

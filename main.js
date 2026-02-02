@@ -2,83 +2,88 @@ import { Car } from './car.js';
 import { InputManager } from './input.js';
 import { GameCamera } from './camera.js';
 
-class ArcadeRacingGame {
-  constructor() {
-    // Canvas y UI
-    this.canvas = document.getElementById('game-canvas');
-    this.speedDisplay = document.getElementById('speed');
+window.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById('game-canvas');
+  const speedDisplay = document.getElementById('speed');
 
-    // Escena
-    this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x87ceeb);
+  // 🔑 FOCO REAL (desktop + mobile)
+  canvas.focus();
+  canvas.addEventListener('touchstart', () => canvas.focus());
+  canvas.addEventListener('click', () => canvas.focus());
 
-    // Cámara
-    this.camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x87ceeb);
 
-    // Renderer USANDO TU CANVAS
-    this.renderer = new THREE.WebGLRenderer({
-      canvas: this.canvas,
-      antialias: true
-    });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+  const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  );
 
-    // Luces
-    this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true
+  });
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(50, 50, 50);
-    this.scene.add(directionalLight);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
 
-    // Piso
-    const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(200, 200),
-      new THREE.MeshPhongMaterial({ color: 0x2d5016 })
-    );
-    ground.rotation.x = -Math.PI / 2;
-    this.scene.add(ground);
+  // Luces
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const sun = new THREE.DirectionalLight(0xffffff, 0.8);
+  sun.position.set(50, 50, 50);
+  scene.add(sun);
 
-    // Carro
-    this.car = new Car(this.scene);
+  // Suelo
+  const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(200, 200),
+    new THREE.MeshPhongMaterial({ color: 0x2d5016 })
+  );
+  ground.rotation.x = -Math.PI / 2;
+  scene.add(ground);
 
-    // Input y cámara de seguimiento
-    this.input = new InputManager();
-    this.gameCamera = new GameCamera(this.camera, this.car.getMesh());
-    this.gameCamera.reset();
+  // Juego
+  const car = new Car(scene);
+  const input = new InputManager();
+  const gameCamera = new GameCamera(camera, car.getMesh());
+  gameCamera.reset();
 
-    // Resize
-    window.addEventListener('resize', () => this.onResize());
+  // 🚨 CONTROLES TOUCH (iPad / móvil)
+  const touchState = {
+    forward: false,
+    left: false,
+    right: false
+  };
 
-    // Loop
-    this.animate();
-  }
+  // Exponer para debug
+  window.touchState = touchState;
 
-  animate() {
-    requestAnimationFrame(() => this.animate());
+  // Loop
+  function loop() {
+    requestAnimationFrame(loop);
 
-    this.car.update(this.input, 1);
-    this.gameCamera.update(this.car.speed);
+    // Simular input desde touch
+    input.keys.forward = touchState.forward || input.keys.forward;
+    input.keys.left = touchState.left || input.keys.left;
+    input.keys.right = touchState.right || input.keys.right;
 
-    if (this.speedDisplay) {
-      this.speedDisplay.textContent = this.car.getSpeedKmh();
+    car.update(input, 1);
+    gameCamera.update(car.speed);
+
+    if (speedDisplay) {
+      speedDisplay.textContent = car.getSpeedKmh();
     }
 
-    this.renderer.render(this.scene, this.camera);
+    renderer.render(scene, camera);
   }
 
-  onResize() {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-  }
-}
+  loop();
 
-// Iniciar juego
-window.addEventListener('DOMContentLoaded', () => {
-  new ArcadeRacingGame();
+  // Resize
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
 });

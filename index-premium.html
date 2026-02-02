@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advency — Automated Sales System</title>
+    <style>
+        /* ===== RESET Y VARIABLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-dark: #0A1F44;
+            --color-accent: #00B4D8;
+            --color-white: #FFFFFF;
+            --color-off-white: #FAFBFC;
+            --color-gray: #F5F7FA;
+            --color-text: #1A202C;
+            --color-text-light: #64748B;
+            --color-text-lighter: #94A3B8;
+            
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 32px;
+            --spacing-lg: 64px;
+            --spacing-xl: 96px;
+            --spacing-2xl: 128px;
+            
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+            color: var(--color-text);
+            line-height: 1.7;
+            background: var(--color-off-white);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== TIPOGRAFÍA ===== */
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            color: var(--color-text);
+        }
+
+        h1 {
+            font-size: clamp(3rem, 7vw, 5.5rem);
+            font-weight: 500;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 500;
+        }
+
+        h3 {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+        }
+
+        /* ===== UTILIDADES ===== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        .container-narrow {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        .section {
+            padding: var(--spacing-2xl) 0;
+        }
+
+        .section-sm {
+            padding: var(--spacing-xl) 0;
+        }
+
+        /* ===== BOTONES ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: 18px 36px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: none;
+            letter-spacing: -0.01em;
+        }
+
+        .btn-primary {
+            background: var(--color-dark);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            background: #0d2d5e;
+            transform: translateY(-2px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--color-text);
+            border: 1.5px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--color-dark);
+            background: rgba(10, 31, 68, 0.03);
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(250, 251, 252, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            background: rgba(250, 251, 252, 0.95);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px var(--spacing-md);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-dark);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: var(--color-dark);
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-background img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7) saturate(0.9);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(10, 31, 68, 0.92) 0%, 
+                rgba(10, 31, 68, 0.85) 50%,
+                rgba(0, 180, 216, 0.15) 100%);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            padding: var(--spacing-md);
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            color: var(--color-white);
+            margin-bottom: var(--spacing-md);
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.3s forwards;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: var(--spacing-lg);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.6s forwards;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: var(--spacing-sm);
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.9s forwards;
+        }
+
+        .hero-cta .btn-primary {
+            background: var(--color-white);
+            color: var(--color-dark);
+        }
+
+        .hero-cta .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-3px);
+        }
+
+        .hero-cta .btn-ghost {
+            border-color: rgba(255, 255, 255, 0.3);
+            color: var(--color-white);
+        }
+
+        .hero-cta .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ===== GLASS CARD ===== */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            transition: all 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ===== PAIN POINTS SECTION ===== */
+        .pain-points {
+            background: var(--color-off-white);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .section-header h2 {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .section-header p {
+            font-size: 1.25rem;
+            color: var(--color-text-light);
+            font-weight: 400;
+        }
+
+        .pain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .pain-item {
+            background: var(--color-white);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .pain-item:hover {
+            border-color: rgba(0, 180, 216, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .pain-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-text);
+        }
+
+        .pain-item p {
+            color: var(--color-text-light);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        /* ===== SOLUTION SECTION ===== */
+        .solution {
+            background: linear-gradient(to bottom, var(--color-off-white) 0%, var(--color-white) 100%);
+        }
+
+        .solution-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-xl);
+            align-items: center;
+            margin-top: var(--spacing-lg);
+        }
+
+        .solution-text h2 {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .solution-text p {
+            font-size: 1.2rem;
+            color: var(--color-text-light);
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.8;
+        }
+
+        .benefits {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            background: var(--color-gray);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+
+        .benefit-item:hover {
+            background: var(--color-white);
+            transform: translateX(8px);
+        }
+
+        .benefit-check {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.875rem;
+        }
+
+        .benefit-text {
+            font-size: 1.05rem;
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .solution-visual {
+            position: relative;
+            padding: var(--spacing-xl);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            text-align: center;
+        }
+
+        .visual-icon {
+            font-size: 6rem;
+            margin-bottom: var(--spacing-md);
+            opacity: 0.9;
+        }
+
+        .visual-text {
+            font-size: 1.5rem;
+            color: var(--color-text);
+            font-weight: 500;
+        }
+
+        /* ===== FEATURES SECTION ===== */
+        .features {
+            background: var(--color-white);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+
+        .feature-card {
+            padding: var(--spacing-lg);
+            background: var(--color-off-white);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.4s ease;
+        }
+
+        .feature-card:hover {
+            background: var(--color-white);
+            border-color: rgba(0, 180, 216, 0.2);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--color-accent), #00d4ff);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--spacing-md);
+            font-size: 1.75rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: var(--spacing-sm);
+            font-size: 1.5rem;
+        }
+
+        .feature-card p {
+            color: var(--color-text-light);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        /* ===== PROCESS SECTION ===== */
+        .process {
+            background: linear-gradient(to bottom, var(--color-white) 0%, var(--color-gray) 100%);
+        }
+
+        .process-steps {
+            margin-top: var(--spacing-xl);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+
+        .process-step {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: var(--spacing-lg);
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 120px;
+            height: 120px;
+            background: var(--color-white);
+            border: 2px solid rgba(0, 180, 216, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 300;
+            color: var(--color-accent);
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            margin-bottom: var(--spacing-sm);
+            font-size: 1.75rem;
+        }
+
+        .step-content p {
+            font-size: 1.15rem;
+            color: var(--color-text-light);
+            line-height: 1.8;
+        }
+
+        /* ===== CREDIBILITY SECTION ===== */
+        .credibility {
+            background: var(--color-dark);
+            color: var(--color-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .credibility-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.12;
+            z-index: 1;
+        }
+
+        .credibility-background img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) brightness(0.5);
+        }
+
+        .credibility-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .credibility h2 {
+            color: var(--color-white);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .credibility p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 700px;
+            margin: 0 auto var(--spacing-lg);
+            line-height: 1.7;
+        }
+
+        .audience-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-xl);
+        }
+
+        .audience-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .audience-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(0, 180, 216, 0.5);
+            transform: scale(1.05);
+        }
+
+        .audience-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .audience-card h3 {
+            color: var(--color-white);
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        /* ===== CTA FINAL ===== */
+        .cta-final {
+            background: linear-gradient(135deg, #f8fafc 0%, var(--color-white) 100%);
+            text-align: center;
+            padding: var(--spacing-2xl) 0;
+        }
+
+        .cta-final h2 {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .cta-final p {
+            font-size: 1.4rem;
+            color: var(--color-text-light);
+            margin-bottom: var(--spacing-lg);
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-final .btn-primary {
+            font-size: 1.15rem;
+            padding: 22px 48px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--color-dark);
+            color: rgba(255, 255, 255, 0.6);
+            padding: var(--spacing-lg) 0;
+            text-align: center;
+        }
+
+        .footer p {
+            font-size: 0.95rem;
+            margin: var(--spacing-xs) 0;
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-view {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in-view.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .solution-layout {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-lg);
+            }
+
+            .solution-visual {
+                order: -1;
+                min-height: 350px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: var(--spacing-xl) 0;
+            }
+
+            .section-sm {
+                padding: var(--spacing-lg) 0;
+            }
+
+            .hero {
+                min-height: 90vh;
+            }
+
+            .pain-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-step {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .step-number {
+                margin: 0 auto;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .audience-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <nav class="nav">
+            <a href="#" class="logo">Advency</a>
+            <a href="#access" class="btn btn-primary">Request access</a>
+        </nav>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-background">
+            <img src="office-space.jpg" alt="Professional workspace">
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Convierte leads en cierres.<br>Automáticamente.</h1>
+            <p class="hero-subtitle">
+                Sistema de ventas y seguimiento automatizado que transforma conversaciones en clientes sin perder ninguna oportunidad.
+            </p>
+            <div class="hero-cta">
+                <a href="#access" class="btn btn-primary">Start the experience</a>
+                <a href="#system" class="btn btn-ghost">Explore the system</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- PAIN POINTS -->
+    <section class="pain-points section">
+        <div class="container">
+            <div class="section-header">
+                <h2>El problema que resolvemos</h2>
+                <p>Dolores reales de profesionales en ventas</p>
+            </div>
+            <div class="pain-grid">
+                <div class="pain-item fade-in-view">
+                    <h3>Pérdida de oportunidades</h3>
+                    <p>Leads que desaparecen porque el seguimiento llegó tarde o nunca llegó.</p>
+                </div>
+                <div class="pain-item fade-in-view">
+                    <h3>Desorden operativo</h3>
+                    <p>Conversaciones dispersas en múltiples canales sin registro ni estructura.</p>
+                </div>
+                <div class="pain-item fade-in-view">
+                    <h3>Tiempo mal invertido</h3>
+                    <p>Horas dedicadas a recordar contactos en lugar de cerrar ventas.</p>
+                </div>
+                <div class="pain-item fade-in-view">
+                    <h3>Sistemas complejos</h3>
+                    <p>CRMs difíciles de implementar que nadie en el equipo adopta.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOLUTION -->
+    <section class="solution section">
+        <div class="container">
+            <div class="solution-layout">
+                <div class="solution-text">
+                    <h2>Sistema todo-en-uno</h2>
+                    <p>
+                        Advency centraliza, califica y automatiza el seguimiento de cada lead sin complicaciones.
+                    </p>
+                    <div class="benefits">
+                        <div class="benefit-item">
+                            <div class="benefit-check">✓</div>
+                            <div class="benefit-text">Captura inteligente desde todos tus canales</div>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-check">✓</div>
+                            <div class="benefit-text">Pre-calificación automática de clientes potenciales</div>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-check">✓</div>
+                            <div class="benefit-text">Seguimiento programado sin pérdidas</div>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-check">✓</div>
+                            <div class="benefit-text">Scripts de ventas integrados</div>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-check">✓</div>
+                            <div class="benefit-text">Pipeline visual en tiempo real</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="solution-visual">
+                    <div class="visual-icon">📊</div>
+                    <div class="visual-text">Control total de tu proceso</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features section" id="system">
+        <div class="container">
+            <div class="section-header">
+                <h2>Características del sistema</h2>
+                <p>Herramientas diseñadas para vender más</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card fade-in-view">
+                    <div class="feature-icon">📊</div>
+                    <h3>Dashboard inteligente</h3>
+                    <p>Visualiza todos tus leads organizados por etapa, prioridad y temperatura del cliente.</p>
+                </div>
+                <div class="feature-card fade-in-view">
+                    <div class="feature-icon">🔔</div>
+                    <h3>Seguimiento automático</h3>
+                    <p>Recordatorios precisos que indican cuándo y cómo contactar cada cliente.</p>
+                </div>
+                <div class="feature-card fade-in-view">
+                    <div class="feature-icon">💬</div>
+                    <h3>Scripts de ventas</h3>
+                    <p>Plantillas validadas que guían cada conversación hacia el cierre.</p>
+                </div>
+                <div class="feature-card fade-in-view">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Pipeline visual</h3>
+                    <p>Sistema drag-and-drop para mover leads entre etapas y ver progreso en vivo.</p>
+                </div>
+                <div class="feature-card fade-in-view">
+                    <div class="feature-icon">✅</div>
+                    <h3>Pre-calificación</h3>
+                    <p>Algoritmo que identifica automáticamente leads con mayor probabilidad de compra.</p>
+                </div>
+                <div class="feature-card fade-in-view">
+                    <div class="feature-icon">📱</div>
+                    <h3>Integración total</h3>
+                    <p>Conecta WhatsApp y otros canales para gestionar todo desde un solo lugar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="process section">
+        <div class="container-narrow">
+            <div class="section-header">
+                <h2>Cómo funciona</h2>
+                <p>De la primera conversación al cierre</p>
+            </div>
+            <div class="process-steps">
+                <div class="process-step fade-in-view">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Captación automática</h3>
+                        <p>
+                            Los leads se registran automáticamente desde redes sociales, WhatsApp o formularios. Sin copiar, sin pérdidas.
+                        </p>
+                    </div>
+                </div>
+                <div class="process-step fade-in-view">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Pre-calificación inteligente</h3>
+                        <p>
+                            El sistema analiza cada contacto y muestra cuáles están listos para comprar y cuáles necesitan nurturing.
+                        </p>
+                    </div>
+                </div>
+                <div class="process-step fade-in-view">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Seguimiento automatizado</h3>
+                        <p>
+                            Recordatorios precisos sobre cuándo contactar cada cliente, qué decirle y cómo moverlo hacia el cierre.
+                        </p>
+                    </div>
+                </div>
+                <div class="process-step fade-in-view">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Cierre eficiente</h3>
+                        <p>
+                            Scripts validados y proceso claro para cerrar más ventas mientras el sistema registra todo automáticamente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CREDIBILITY / AUDIENCE -->
+    <section class="credibility section">
+        <div class="credibility-background">
+            <img src="office-space.jpg" alt="Professional environment">
+        </div>
+        <div class="credibility-content container">
+            <div class="section-header">
+                <h2>Diseñado para profesionales</h2>
+                <p>Si gestionas leads, Advency es tu sistema</p>
+            </div>
+            <div class="audience-grid">
+                <div class="audience-card">
+                    <div class="audience-icon">☀️</div>
+                    <h3>Consultores Solares</h3>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">💼</div>
+                    <h3>Vendedores B2B</h3>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🏠</div>
+                    <h3>Realtors</h3>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🎓</div>
+                    <h3>Coaches</h3>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🚀</div>
+                    <h3>Agency Owners</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="cta-final section" id="access">
+        <div class="container-narrow">
+            <h2>Empieza a convertir más</h2>
+            <p>
+                Sistema diseñado para profesionales que valoran su tiempo y resultados
+            </p>
+            <a href="#" class="btn btn-primary">Request access</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Advency — Automated Sales System</p>
+            <p>Built for professionals who close deals</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerOffset = 80;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Header scroll effect
+        const header = document.querySelector('.header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Intersection Observer para animaciones
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observar elementos con animación
+        document.querySelectorAll('.fade-in-view').forEach(el => {
+            observer.observe(el);
+        });
+
+        // CTA interaction
+        const ctaButtons = document.querySelectorAll('.btn-primary');
+        ctaButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // Aquí conectar con sistema de registro
+                console.log('Access requested');
+            });
+        });
+    </script>
+</body>
+</html>
